@@ -21,3 +21,23 @@
 ### 3. 결제 취소 API
 
 - (DELETE) /v1/payment/{id}
+
+## Domain
+
+- CardNumber
+- Validity
+- CVC
+- Installment
+- Amount
+- Vat
+- Payment
+
+## Table
+
+- 테이블은 부분취소 기능 추가를 위해 결재 완료한 내역에 대해서만 관리하는 테이블을 만듭니다.
+
+### 결재내역
+
+- uuid
+- Amount
+- Vat
