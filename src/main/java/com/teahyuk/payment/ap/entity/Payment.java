@@ -11,26 +11,15 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-@Builder
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
-public class Payment {
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Column(length = 20, nullable = false)
-    private String uid;
-
-    @Column(length = 300)
-    private String cardInfo;
-
-    @Column(nullable = false)
-    private Integer amount;
-
-    @Column
-    private Integer vat;
+public class Payment extends PaymentInfo {
 
     @OneToMany(mappedBy = "payment")
     private List<Cancel> cancels = new ArrayList<>();
+
+    @Builder
+    public Payment(String uid, String cardInfo, Integer amount, Integer vat) {
+        super(uid,cardInfo,amount,vat);
+    }
 }

@@ -5,21 +5,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-@Builder
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
-public class StringData {
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Column(length = 20, nullable = false)
-    private String uid;
-
+public class StringData extends Uid {
     @Column(length = 450)
-    private String cardInfo;
+    private String string;
+
+    @Builder
+    public StringData(String uid, String string) {
+        super(uid);
+        this.string = string;
+    }
 }

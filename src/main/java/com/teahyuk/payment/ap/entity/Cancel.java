@@ -9,27 +9,16 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-@Builder
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
-public class Cancel {
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Column(length = 20, nullable = false)
-    private String uid;
-
-    @Column(length = 300, nullable = false)
-    private String cardInfo;
-
-    @Column(nullable = false)
-    private Integer amount;
-
-    @Column
-    private Integer vat;
-
+public class Cancel extends PaymentInfo {
     @ManyToOne
     @JoinColumn(name = "PAYMENT_ID")
     private Payment payment;
+
+    @Builder
+    public Cancel(String uid, String cardInfo, Integer amount, Integer vat, Payment payment) {
+        super(uid, cardInfo, amount, vat);
+        this.payment = payment;
+    }
 }
