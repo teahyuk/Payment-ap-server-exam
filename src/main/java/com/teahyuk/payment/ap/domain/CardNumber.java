@@ -2,10 +2,10 @@ package com.teahyuk.payment.ap.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.ToString;
 
-@Getter
 @EqualsAndHashCode
+@ToString
 public class CardNumber {
     private final static String INVALID_FORMAT = "Create card number error, card number must be between 10 to 16 digits. cardNumbers=%s";
     private final String cardNumber;
@@ -23,8 +23,7 @@ public class CardNumber {
     }
 
     @JsonValue
-    @Override
-    public String toString() {
+    public String getCardNumber() {
         return cardNumber;
     }
 }
