@@ -6,18 +6,18 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class CardNumberTest {
+class UidTest {
     @ParameterizedTest
-    @ValueSource(strings = {"1234567890", "1234567890123456", "0001234567"})
-    void constructor(String cardNumber) {
-        assertThatCode(() -> new CardNumber(cardNumber))
+    @ValueSource(strings = {"12345678901234567890", "abcdefghijklmnopqrst"})
+    void constructor(String uid) {
+        assertThatCode(() -> new Uid(uid))
                 .doesNotThrowAnyException();
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"000123456", "01234567890123456"})
-    void constructorError(String cardNumber) {
-        assertThatThrownBy(() -> new CardNumber(cardNumber))
+    @ValueSource(strings = {"1234567890123456789", "123456789012345678901"})
+    void constructorError(String uid) {
+        assertThatThrownBy(() -> new Uid(uid))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
