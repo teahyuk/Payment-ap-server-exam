@@ -1,5 +1,6 @@
 package com.teahyuk.payment.ap.repository;
 
+import com.teahyuk.payment.ap.domain.Uid;
 import com.teahyuk.payment.ap.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

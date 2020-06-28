@@ -1,5 +1,6 @@
 package com.teahyuk.payment.ap.entity;
 
+import com.teahyuk.payment.ap.domain.Uid;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import javax.persistence.InheritanceType;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-abstract class PaymentInfo extends Uid {
+abstract class PaymentInfo extends EntityId {
     @Column(length = 300, nullable = false)
     private String cardInfo;
 
@@ -23,7 +24,7 @@ abstract class PaymentInfo extends Uid {
     @Column
     private Integer vat;
 
-    public PaymentInfo(String uid, String cardInfo, int amount, Integer vat) {
+    public PaymentInfo(Uid uid, String cardInfo, int amount, Integer vat) {
         super(uid);
         this.cardInfo = cardInfo;
         this.amount = amount;

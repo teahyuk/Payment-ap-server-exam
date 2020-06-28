@@ -1,14 +1,21 @@
 package com.teahyuk.payment.ap.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.Column;
+
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode
 @ToString
 public class Uid {
     private static final String INVALID_FORMAT = "Create uid error, uid must be has characters. uid=%s";
-    private final String uid;
+
+    @Column(length = 20, nullable = false)
+    private String uid;
 
     public Uid(String uid) {
         this.uid = uid;
@@ -16,7 +23,7 @@ public class Uid {
     }
 
     private void validationCheck() {
-        if (uid.length()!=20) {
+        if (uid.length() != 20) {
             throw new IllegalArgumentException(String.format(INVALID_FORMAT, uid));
         }
     }

@@ -6,7 +6,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class UidTest {
+public class UidTest {
+    public static Uid createTestUid(String uid){
+        return new Uid(String.format("%20s",uid));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"12345678901234567890", "abcdefghijklmnopqrst"})
     void constructor(String uid) {

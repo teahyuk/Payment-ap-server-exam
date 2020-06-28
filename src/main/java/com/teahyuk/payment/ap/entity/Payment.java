@@ -1,5 +1,6 @@
 package com.teahyuk.payment.ap.entity;
 
+import com.teahyuk.payment.ap.domain.Uid;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class Payment extends PaymentInfo {
     private List<Cancel> cancels = new ArrayList<>();
 
     @Builder
-    public Payment(String uid, String cardInfo, Integer amount, Integer vat) {
+    public Payment(Uid uid, String cardInfo, Integer amount, Integer vat) {
         super(uid,cardInfo,amount,vat);
     }
 }
