@@ -1,12 +1,13 @@
 package com.teahyuk.payment.ap.domain;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.EqualsAndHashCode;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-@Getter
+@EqualsAndHashCode
 public class Validity {
     private final static String INVALID_FORMAT = "Create validity error, validity must follow this format %s. validity=%s";
     private final static String VALIDITY_FORMAT = "MMyy";
@@ -24,4 +25,9 @@ public class Validity {
         return YearMonth.now().isAfter(validity);
     }
 
+    @JsonValue
+    @Override
+    public String toString() {
+        return validity.format(DateTimeFormatter.ofPattern(VALIDITY_FORMAT));
+    }
 }

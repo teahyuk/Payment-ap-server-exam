@@ -1,15 +1,14 @@
 package com.teahyuk.payment.ap.domain;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
-@Getter
 @EqualsAndHashCode
 public class Vat {
     private final static String INVALID_FORMAT = "Create Vat error, Vat must be 0 ~ 1,000,000,000. vat=%d";
     private final int vat;
 
-    Vat(int vat) {
+    public Vat(int vat) {
         this.vat = vat;
         validationCheck();
     }
@@ -20,4 +19,13 @@ public class Vat {
         }
     }
 
+    @JsonValue
+    public int getVat() {
+        return vat;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%,d", vat);
+    }
 }

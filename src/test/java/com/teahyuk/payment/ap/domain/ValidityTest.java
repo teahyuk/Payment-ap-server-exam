@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.*;
 
-@EqualsAndHashCode
 class ValidityTest {
 
     @ParameterizedTest

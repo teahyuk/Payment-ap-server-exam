@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@EqualsAndHashCode
 class CardNumberTest {
     @ParameterizedTest
     @ValueSource(strings = {"1234567890", "1234567890123456","0001234567"})

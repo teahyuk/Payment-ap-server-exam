@@ -1,11 +1,14 @@
 package com.teahyuk.payment.ap.domain;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.EqualsAndHashCode;
 
-@Getter
+@EqualsAndHashCode
 public class Amount {
+    public final static Amount MAX_VALUE = new Amount(1000000000);
+
     private final static String INVALID_FORMAT = "Create Amount error, Amount must be 100 ~ 1,000,000,000. amount=%d";
-    private final static String INVALID_VAT_FORMAT = "Create Amount.getVat() error, Var must not be greater then amount. amount=%d, vat=%d";
+
     private final int amount;
 
     public Amount(int amount) {
@@ -23,18 +26,17 @@ public class Amount {
         return new Vat(Math.round(amount / 11.0f));
     }
 
-    public Vat getVat(int vat) {
-        if (isLess(vat)) {
-            throw new IllegalArgumentException(String.format(INVALID_VAT_FORMAT, amount, vat));
-        }
-        return new Vat(vat);
-    }
-
     public boolean isValidVat(Vat vat) {
-        return isLess(vat.getVat());
+        return vat.getVat() <= amount;
     }
 
-    private boolean isLess(int less) {
-        return amount < less;
+    @JsonValue
+    public int getAmount() {
+        return amount;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%,d", amount);
     }
 }
