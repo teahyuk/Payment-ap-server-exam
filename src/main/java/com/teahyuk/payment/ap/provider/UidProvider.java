@@ -1,6 +1,7 @@
 package com.teahyuk.payment.ap.provider;
 
 import com.teahyuk.payment.ap.domain.CardNumber;
+import com.teahyuk.payment.ap.domain.Uid;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -10,13 +11,13 @@ public class UidProvider {
 
     private final Random random = new Random();
 
-    public String makeUid(CardNumber cardNumber) {
+    public Uid makeUid(CardNumber cardNumber) {
         String cardAndTimeMilli = longToBase64(Long.parseLong(cardNumber.getCardNumber())) + longToBase64(System.currentTimeMillis());
         int remainingLength = 20 - cardAndTimeMilli.length();
         if (remainingLength != 0) {
             cardAndTimeMilli += longToBase64(random.nextLong()).substring(0, remainingLength);
         }
-        return cardAndTimeMilli;
+        return new Uid(cardAndTimeMilli);
     }
 
     private static String longToBase64(long v) {
