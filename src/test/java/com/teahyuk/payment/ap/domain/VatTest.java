@@ -8,15 +8,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class VatTest {
     @ParameterizedTest
-    @ValueSource(longs = {0, 9999999999L})
-    void constructor(long vat) {
+    @ValueSource(ints = {0, 1000000000})
+    void constructor(int vat) {
         assertThatCode(() -> new Vat(vat))
                 .doesNotThrowAnyException();
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {-1, 10000000000L})
-    void constructorError(long vat) {
+    @ValueSource(ints = {-1, 1000000001})
+    void constructorError(int vat) {
         assertThatThrownBy(() -> new Vat(vat))
                 .isInstanceOf(IllegalArgumentException.class);
     }
