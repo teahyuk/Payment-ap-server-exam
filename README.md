@@ -24,13 +24,29 @@
 
 ## Domain
 
+### VO
+
 - CardNumber
+  - 0으로 시작하는 번호가 있을 수 있다. (String 저장)
 - Validity
+  - 내부적으로 YearMonth를 사용하여 저장한다
+  - isExpired()
+    - 오늘 날짜 기준 만료일 계산
 - CVC
+  - 0으로 시작하는 번호가 있을 수 있다. (String 저장)
 - Installment
+  - 일시불(0), 할부 (2~12) int 로 제한 정함
 - Amount
+  - long 형 100~9,999,999,999 로 저장
+  - getVat()
+    - 자동 VAT 계산 this/11 
+  - getVat(long vat)
+    - Vat valid 체크 하면서 생성
+    - Vat = 0~this.amount
+  - isValidVat
+    - 현재 Vat 가 합당한 Vat 인지 확인
 - Vat
-- Payment
+  - long 형 0~9,999,999,999 로 저장
 
 ## Table
 
