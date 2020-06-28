@@ -1,2 +1,9 @@
 server:
   port: 8080
+
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    propertis.hibernate.show_sql: true
+    open-in-view: true
+    properties.hibernate.hbm2ddl.auto: create

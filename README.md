@@ -17,7 +17,6 @@
 - Amount 및 VAT 는 10억 (1,000,000,000) 이하 이다.
 - 암/복호화 는 카드번호,유효기간,cvc 이다.
 - 테이블 설계 는 추가 선택 요구사항인 부분 취소를 위해 결재 uid 와, Amount, Vat 만 설정 합니다.
-- 결재/취소 정보 조회 시 에는 통신을 통해 카드사에서 가져온다는 개념으로 String 데이터 조회를 활용합니다.
 
 ## API
 
@@ -65,14 +64,35 @@
 
 ## Table
 
-### 결재내역
+### 서비스 테이블
+
+#### Payment
 
 - id
   - DB 자체 관리 Auto-increment id
 - uid
   - 관리번호
-  - CardNumber, Validity, Cvc 활용한 통신용 unique id
+  - uuid 중복 일 시 다시 생성
 - Amount
   - 현재 결재 금액
 - Vat
-  - 부가가치세
+  - 부가 가치세
+  
+#### Cancel
+
+- id
+  - DB 자체 관리 Auto-increment id
+- uid
+  - 관리번호 payment와 동일
+- Amount
+  - 현재 취소 금액
+- Vat
+  - 취소 부가 가치세
+
+### 통신구간 (String 데이터)
+
+#### StringData
+
+- id
+- uid
+- String
