@@ -6,7 +6,18 @@
 - AP 서버로 써 MSA 에 대응 할 서비스 개발을 위해 state-less 하게 구현 하는 것이 목표 입니다.
   - 중복 결재 방지를 위해 작업 하는 부분은 옵션 입니다.
     1. 단순히 concurrentMap 으로 제어
-    2. 클러스터링 을 위한 concurrentMap<->Redis 옵션화
+    2. 클러스터링 을 위한 concurrentMap<->Redis 옵션화.
+  - DB 는 property를 열어 3rd party DB 설정 가능하게끔 개발 합니다.
+    
+## 요구사항
+
+- 실제 결재 요청은 3rd party service 로의 전달이 필요함.
+- 결재 API 도 Post
+- 결재 취소 API 도 Post 이다
+- Amount 및 VAT 는 10억 (1,000,000,000) 이하 이다.
+- 암/복호화 는 카드번호,유효기간,cvc 이다.
+- 테이블 설계 는 추가 선택 요구사항인 부분 취소를 위해 결재 uid 와, Amount, Vat 만 설정 합니다.
+- 결재/취소 정보 조회 시 에는 통신을 통해 카드사에서 가져온다는 개념으로 String 데이터 조회를 활용합니다.
 
 ## API
 
@@ -14,13 +25,17 @@
 
 - (POST) /v1/payment
 
-### 2. 데이터 조회 API
+### 2. 결제 데이터 조회 API
 
 - (GET) /v1/payment/{id}
 
 ### 3. 결제 취소 API
 
-- (DELETE) /v1/payment/{id}
+- (POST) /v1/payment/{id}/cancel
+
+### 4. 결제 취소 데이터 조회 API
+
+- (POST) /v1/payment/{id}/cancel/{cancelId}
 
 ## Domain
 
@@ -37,7 +52,7 @@
 - Installment
   - 일시불(0), 할부 (2~12) int 로 제한 정함
 - Amount
-  - long 형 100~9,999,999,999 로 저장
+  - int 형 100 ~ 1,000,000,000 로 저장
   - getVat()
     - 자동 VAT 계산 this/11 
   - getVat(long vat)
@@ -46,14 +61,18 @@
   - isValidVat
     - 현재 Vat 가 합당한 Vat 인지 확인
 - Vat
-  - long 형 0~9,999,999,999 로 저장
+  - int 형 100 ~ 1,000,000,000 로 저장
 
 ## Table
 
-- 테이블은 부분취소 기능 추가를 위해 결재 완료한 내역에 대해서만 관리하는 테이블을 만듭니다.
-
 ### 결재내역
 
-- uuid
+- id
+  - DB 자체 관리 Auto-increment id
+- uid
+  - 관리번호
+  - CardNumber, Validity, Cvc 활용한 통신용 unique id
 - Amount
+  - 현재 결재 금액
 - Vat
+  - 부가가치세
