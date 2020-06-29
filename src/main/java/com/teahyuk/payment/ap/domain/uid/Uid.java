@@ -1,4 +1,4 @@
-package com.teahyuk.payment.ap.domain;
+package com.teahyuk.payment.ap.domain.uid;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
@@ -21,6 +21,10 @@ public class Uid {
     public Uid(String uid) {
         this.uid = uid;
         validationCheck();
+    }
+
+    public static UidRandomCreator randomCreator() {
+        return new UidRandomCreator();
     }
 
     private void validationCheck() {

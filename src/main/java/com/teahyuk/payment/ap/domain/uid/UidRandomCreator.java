@@ -1,17 +1,22 @@
-package com.teahyuk.payment.ap.provider;
+package com.teahyuk.payment.ap.domain.uid;
 
 import com.teahyuk.payment.ap.domain.CardNumber;
-import com.teahyuk.payment.ap.domain.Uid;
-import org.springframework.stereotype.Component;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Random;
 
-@Component
-public class UidProvider {
-
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+public class UidRandomCreator {
     private final Random random = new Random();
+    private CardNumber cardNumber;
 
-    public Uid makeUid(CardNumber cardNumber) {
+    public UidRandomCreator cardNumber(CardNumber cardNumber) {
+        this.cardNumber = cardNumber;
+        return this;
+    }
+
+    public Uid randomBuild() {
         String cardAndTimeMilli = longToBase64(Long.parseLong(cardNumber.getCardNumber())) + longToBase64(System.currentTimeMillis());
         int remainingLength = Uid.LENGTH - cardAndTimeMilli.length();
         if (remainingLength > 0) {
@@ -20,7 +25,7 @@ public class UidProvider {
         return new Uid(cardAndTimeMilli);
     }
 
-    private static String longToBase64(long v) {
+    private String longToBase64(long v) {
         final char[] digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 /".toCharArray();
         int shift = 6;
         char[] buf = new char[64];

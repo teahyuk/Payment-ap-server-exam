@@ -1,5 +1,7 @@
 package com.teahyuk.payment.ap.domain;
 
+import com.teahyuk.payment.ap.domain.uid.Uid;
+import com.teahyuk.payment.ap.domain.uid.UidTest;
 import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.Test;
 

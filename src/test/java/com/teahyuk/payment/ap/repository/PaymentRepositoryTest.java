@@ -1,6 +1,6 @@
 package com.teahyuk.payment.ap.repository;
 
-import com.teahyuk.payment.ap.domain.Uid;
+import com.teahyuk.payment.ap.domain.uid.Uid;
 import com.teahyuk.payment.ap.entity.Cancel;
 import com.teahyuk.payment.ap.entity.Payment;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
 
-import static com.teahyuk.payment.ap.domain.UidTest.createTestUid;
+import static com.teahyuk.payment.ap.domain.uid.UidTest.createTestUid;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

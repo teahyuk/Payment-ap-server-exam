@@ -1,5 +1,6 @@
 package com.teahyuk.payment.ap.domain;
 
+import com.teahyuk.payment.ap.domain.uid.Uid;
 import com.teahyuk.payment.ap.util.AES256Crypto;
 import com.teahyuk.payment.ap.util.CryptoException;
 import lombok.Builder;
