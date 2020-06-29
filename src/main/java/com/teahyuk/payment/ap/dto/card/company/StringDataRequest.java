@@ -16,31 +16,24 @@ public class StringDataRequest {
     private final static String INVALID_FORMAT = "StringDataRequest build error. %s must not be null when requestType is %s";
 
     private final Uid uid;
-    private final String encryptedCardInfo;
     private final String stringData;
 
     @Builder
     public StringDataRequest(@NonNull RequestType requestType,
                              @NonNull Uid uid,
-                             CardInfo cardInfo,
+                             @NonNull CardInfo cardInfo,
                              @NonNull Amount amount,
                              @NonNull Vat vat,
                              Installment installment,
-                             String originUid,
-                             String encryptedCardInfo) throws CryptoException {
-        validCheckNullable(RequestType.PAYMENT, requestType, cardInfo, "cardInfo");
+                             String originUid) throws CryptoException {
         validCheckNullable(RequestType.PAYMENT, requestType, installment, "installment");
         validCheckNullable(RequestType.CANCEL, requestType, originUid, "originUid");
-        validCheckNullable(RequestType.CANCEL, requestType, encryptedCardInfo, "encryptedCardInfo");
 
-        cardInfo = cardInfo == null ? CardInfo.ofEncryptedString(encryptedCardInfo, originUid) : cardInfo;
         installment = installment == null ? Installment.of(0) : installment;
-        encryptedCardInfo = encryptedCardInfo == null ? cardInfo.getEncryptedString(uid) : encryptedCardInfo;
         originUid = originUid == null ? Strings.EMPTY : originUid;
 
         this.uid = uid;
-        this.encryptedCardInfo = encryptedCardInfo;
-        this.stringData = makeStringData(requestType, uid, cardInfo, amount, vat, installment, originUid, encryptedCardInfo);
+        this.stringData = makeStringData(requestType, uid, cardInfo, amount, vat, installment, originUid, cardInfo.getEncryptedString(uid));
     }
 
     private void validCheckNullable(RequestType expectedType, RequestType requestType, Object nullableObject,

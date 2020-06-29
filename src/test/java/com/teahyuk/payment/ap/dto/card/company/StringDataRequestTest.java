@@ -13,14 +13,12 @@ import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class StringDataRequestTest {
     private Uid uid;
     private CardInfo cardInfo;
     private StringDataRequest paymentRequest;
-    private StringDataRequest cancelRequest;
 
     @BeforeEach
     void setting() throws CryptoException {
@@ -38,36 +36,32 @@ class StringDataRequestTest {
                 .vat(new Vat(1818))
                 .installment(Installment.of(0))
                 .build();
-        cancelRequest = StringDataRequest.builder()
+    }
+
+    @Test
+    void buildCancelTest() {
+        assertThatCode(() -> StringDataRequest.builder()
                 .requestType(RequestType.CANCEL)
                 .uid(UidTest.createTestUid("98765432109876543210"))
-                .amount(new Amount(10))
+                .cardInfo(cardInfo)
+                .amount(new Amount(100))
                 .vat(new Vat(1))
                 .originUid(uid.getUid())
-                .encryptedCardInfo(paymentRequest.getEncryptedCardInfo())
-                .build();
+                .build())
+                .doesNotThrowAnyException();
     }
 
     @Test
     void buildFailTest() {
-        assertThatThrownBy(() -> buildStringDataRequest(RequestType.PAYMENT, null, Installment.of(0), uid.getUid(),
-                paymentRequest.getEncryptedCardInfo()))
+        assertThatThrownBy(() -> buildStringDataRequest(RequestType.PAYMENT, null, uid.getUid()))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        assertThatThrownBy(() -> buildStringDataRequest(RequestType.PAYMENT, cardInfo, null, uid.getUid(),
-                paymentRequest.getEncryptedCardInfo()))
-                .isInstanceOf(IllegalArgumentException.class);
-
-        assertThatThrownBy(() -> buildStringDataRequest(RequestType.CANCEL, cardInfo, Installment.of(0), null,
-                paymentRequest.getEncryptedCardInfo()))
-                .isInstanceOf(IllegalArgumentException.class);
-
-        assertThatThrownBy(() -> buildStringDataRequest(RequestType.CANCEL, cardInfo, Installment.of(0), uid.getUid(), null))
+        assertThatThrownBy(() -> buildStringDataRequest(RequestType.CANCEL, Installment.of(0), null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    private void buildStringDataRequest(RequestType requestType, CardInfo cardInfo, Installment installment,
-                                        String originUid, String encryptedCardInfo) throws CryptoException {
+    private void buildStringDataRequest(RequestType requestType, Installment installment,
+                                        String originUid) throws CryptoException {
         StringDataRequest.builder()
                 .requestType(requestType)
                 .uid(uid)
@@ -76,40 +70,34 @@ class StringDataRequestTest {
                 .vat(new Vat(9))
                 .installment(installment)
                 .originUid(originUid)
-                .encryptedCardInfo(encryptedCardInfo)
                 .build();
     }
 
     @Test
-    void getStringDataTest() {
-        assertThat(paymentRequest.getStringData())
+    void getStringDataTest() throws CryptoException {
+        String serializedString = paymentRequest.getStringData();
+        assertThat(serializedString.substring(0, serializedString.length() - 347))
                 .isEqualTo(String.format(
                         " 446" +
                                 "PAYMENT   " +
                                 "01234567890123456789" +
                                 "0123456789          " +
-                                "03" +
+                                "00" +
                                 "%s" +
                                 "012" +
                                 "     20000" +
                                 "0000001818" +
-                                "                    " +
-                                "%-300s" +
-                                "                                               ",
-                        ValidityTest.thisMonthValidity.getValidity(),
-                        paymentRequest.getEncryptedCardInfo()));
+                                "                    ",
+                        ValidityTest.thisMonthValidity.getValidity()));
+        String encryptedCardInfo = serializedString.substring(103, 300).trim();
+        assertThat(CardInfo.ofEncryptedString(encryptedCardInfo, uid.getUid()))
+                .isEqualTo(cardInfo);
     }
 
     @Test
     void getUidTest() {
         assertThat(paymentRequest.getUid())
                 .isEqualTo(uid);
-    }
-
-    @Test
-    void getEncryptedCardInfoTest() throws CryptoException {
-        assertThat(CardInfo.ofEncryptedString(paymentRequest.getEncryptedCardInfo(), uid.getUid()))
-                .isEqualTo(cardInfo);
     }
 
 }
