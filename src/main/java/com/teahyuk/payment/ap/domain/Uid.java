@@ -12,9 +12,10 @@ import javax.persistence.Column;
 @EqualsAndHashCode
 @ToString
 public class Uid {
+    public static final int LENGTH = 20;
     private static final String INVALID_FORMAT = "Create uid error, uid must be has characters. uid=%s";
 
-    @Column(length = 20, nullable = false)
+    @Column(length = LENGTH, nullable = false)
     private String uid;
 
     public Uid(String uid) {
@@ -23,7 +24,7 @@ public class Uid {
     }
 
     private void validationCheck() {
-        if (uid.length() != 20) {
+        if (uid.length() != LENGTH) {
             throw new IllegalArgumentException(String.format(INVALID_FORMAT, uid));
         }
     }

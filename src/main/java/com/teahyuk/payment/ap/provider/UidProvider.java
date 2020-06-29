@@ -13,8 +13,8 @@ public class UidProvider {
 
     public Uid makeUid(CardNumber cardNumber) {
         String cardAndTimeMilli = longToBase64(Long.parseLong(cardNumber.getCardNumber())) + longToBase64(System.currentTimeMillis());
-        int remainingLength = 20 - cardAndTimeMilli.length();
-        if (remainingLength != 0) {
+        int remainingLength = Uid.LENGTH - cardAndTimeMilli.length();
+        if (remainingLength > 0) {
             cardAndTimeMilli += longToBase64(random.nextLong()).substring(0, remainingLength);
         }
         return new Uid(cardAndTimeMilli);
