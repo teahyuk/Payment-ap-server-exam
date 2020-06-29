@@ -1,4 +1,4 @@
-package com.teahyuk.payment.ap.domain;
+package com.teahyuk.payment.ap.domain.card;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -17,7 +17,7 @@ public class CvcTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"0", "0123", "8000","se1"})
+    @ValueSource(strings = {"0", "0123", "8000", "se1"})
     void constructorError(String cvc) {
         assertThatThrownBy(() -> new Cvc(cvc))
                 .isInstanceOf(IllegalArgumentException.class);

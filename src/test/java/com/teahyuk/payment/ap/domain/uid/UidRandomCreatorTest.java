@@ -1,6 +1,6 @@
 package com.teahyuk.payment.ap.domain.uid;
 
-import com.teahyuk.payment.ap.domain.CardNumberTest;
+import com.teahyuk.payment.ap.domain.card.CardNumberTest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

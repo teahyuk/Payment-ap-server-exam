@@ -1,5 +1,7 @@
-package com.teahyuk.payment.ap.entity;
+package com.teahyuk.payment.ap.domain.entity;
 
+import com.teahyuk.payment.ap.domain.Amount;
+import com.teahyuk.payment.ap.domain.Vat;
 import com.teahyuk.payment.ap.domain.uid.Uid;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,17 +11,17 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
-public class Cancel extends PaymentInfo {
+public class Cancel extends AmountInfo {
     @ManyToOne
     @JoinColumn(name = "PAYMENT_ID")
     private Payment payment;
 
     @Builder
-    public Cancel(Uid uid, String cardInfo, Integer amount, Integer vat, Payment payment) {
-        super(uid, cardInfo, amount, vat);
+    public Cancel(Uid uid, String cardInfo, Amount amount, Vat vat, Payment payment) {
+        super(uid, amount, vat);
         this.payment = payment;
     }
 }

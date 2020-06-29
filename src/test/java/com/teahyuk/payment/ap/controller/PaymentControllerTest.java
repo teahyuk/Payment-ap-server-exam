@@ -1,6 +1,11 @@
 package com.teahyuk.payment.ap.controller;
 
-import com.teahyuk.payment.ap.domain.*;
+import com.teahyuk.payment.ap.domain.card.CardNumberTest;
+import com.teahyuk.payment.ap.domain.card.CvcTest;
+import com.teahyuk.payment.ap.domain.Installment;
+import com.teahyuk.payment.ap.domain.card.ValidityTest;
+import com.teahyuk.payment.ap.domain.Amount;
+import com.teahyuk.payment.ap.domain.Vat;
 import com.teahyuk.payment.ap.dto.PaymentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -24,7 +29,7 @@ class PaymentControllerTest {
                 .amount(new Amount(20000))
                 .cvc(CvcTest.cvc1)
                 .validity(ValidityTest.thisMonthValidity)
-                .installment(new Installment(12))
+                .installment(Installment.of(12))
                 .vat(new Vat(200000))
                 .build();
         this.webTestClient.post().uri("/v1/payment").accept(MediaType.APPLICATION_JSON)

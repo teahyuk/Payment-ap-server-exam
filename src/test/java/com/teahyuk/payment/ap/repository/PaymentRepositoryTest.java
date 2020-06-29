@@ -1,8 +1,11 @@
 package com.teahyuk.payment.ap.repository;
 
+import com.teahyuk.payment.ap.domain.Amount;
+import com.teahyuk.payment.ap.domain.Installment;
+import com.teahyuk.payment.ap.domain.Vat;
+import com.teahyuk.payment.ap.domain.entity.Cancel;
+import com.teahyuk.payment.ap.domain.entity.Payment;
 import com.teahyuk.payment.ap.domain.uid.Uid;
-import com.teahyuk.payment.ap.entity.Cancel;
-import com.teahyuk.payment.ap.entity.Payment;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -11,6 +14,7 @@ import java.util.Optional;
 
 import static com.teahyuk.payment.ap.domain.uid.UidTest.createTestUid;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 @DataJpaTest
 class PaymentRepositoryTest {
@@ -24,42 +28,43 @@ class PaymentRepositoryTest {
 
     @Test
     void testCurrentAmount() {
-        Payment payment = saveAndGetAmount(createTestUid("0"), 20000, 0);
+        Payment payment = saveAndGetPayment(createTestUid("0"), 20000, 0);
         Cancel cancel1 = saveCancel(payment, createTestUid("1"), 1000, 0);
         Cancel cancel2 = saveCancel(payment, createTestUid("2"), 2000, 0);
 
-        assertThat(paymentRepository.getCurrentPayment(payment.getUid().getUid()))
+        assertThat(paymentRepository.getCurrentAmount(payment.getUid()))
                 .isEqualTo(Optional.of(payment.getAmount() - cancel1.getAmount() - cancel2.getAmount()));
     }
 
     @Test
     void testCurrentVat() {
-        Payment payment = saveAndGetAmount(createTestUid("0"), 20000, 20);
+        Payment payment = saveAndGetPayment(createTestUid("0"), 20000, 20);
         Cancel cancel1 = saveCancel(payment, createTestUid("1"), 1000, 10);
         Cancel cancel2 = saveCancel(payment, createTestUid("2"), 2000, 5);
 
-        assertThat(paymentRepository.getCurrentVat(payment.getUid().getUid()))
+        assertThat(paymentRepository.getCurrentVat(payment.getUid()))
                 .isEqualTo(Optional.of(payment.getVat() - cancel1.getVat() - cancel2.getVat()));
     }
 
     private Cancel saveCancel(Payment payment, Uid uid, int amount, int vat) {
         Cancel cancel = Cancel.builder()
-                .amount(amount)
+                .amount(new Amount(amount))
                 .cardInfo(payment.getCardInfo())
                 .uid(uid)
                 .payment(payment)
-                .vat(vat)
+                .vat(new Vat(vat))
                 .build();
         cancelRepository.save(cancel);
         return cancel;
     }
 
-    private Payment saveAndGetAmount(Uid uid, int amount, int vat) {
+    private Payment saveAndGetPayment(Uid uid, int amount, int vat) {
         Payment payment = Payment.builder()
                 .uid(uid)
-                .amount(amount)
+                .amount(new Amount(amount))
                 .cardInfo(dummyCardInfo)
-                .vat(vat)
+                .vat(new Vat(vat))
+                .installment(Installment.of(0))
                 .build();
         paymentRepository.save(payment);
         return payment;

@@ -1,4 +1,4 @@
-package com.teahyuk.payment.ap.domain;
+package com.teahyuk.payment.ap.domain.card;
 
 import com.teahyuk.payment.ap.domain.uid.Uid;
 import com.teahyuk.payment.ap.domain.uid.UidTest;
@@ -25,9 +25,9 @@ class CardInfoTest {
                 .isNotEqualTo(encryptedCardInfo2);
 
         assertThat(cardInfo)
-                .isEqualTo(CardInfo.ofEncryptedString(encryptedCardInfo1, keyUid));
+                .isEqualTo(CardInfo.ofEncryptedString(encryptedCardInfo1, keyUid.getUid()));
         assertThat(cardInfo)
-                .isEqualTo(CardInfo.ofEncryptedString(encryptedCardInfo2, keyUid));
+                .isEqualTo(CardInfo.ofEncryptedString(encryptedCardInfo2, keyUid.getUid()));
     }
 
     @Test
@@ -41,7 +41,7 @@ class CardInfoTest {
 
         String encryptedCardInfo = cardInfo.getEncryptedString(keyUid);
 
-        assertThatThrownBy(() -> CardInfo.ofEncryptedString(encryptedCardInfo, UidTest.createTestUid("1")))
+        assertThatThrownBy(() -> CardInfo.ofEncryptedString(encryptedCardInfo, keyUid.getUid()+"a"))
                 .isInstanceOf(CryptoException.class);
     }
 

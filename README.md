@@ -52,11 +52,8 @@
   - 일시불(0), 할부 (2~12) int 로 제한 정함
 - Amount
   - int 형 100 ~ 1,000,000,000 로 저장
-  - getVat()
+  - createDefaultVat()
     - 자동 VAT 계산 this/11 
-  - getVat(long vat)
-    - Vat valid 체크 하면서 생성
-    - Vat = 0~this.amount
   - isValidVat
     - 현재 Vat 가 합당한 Vat 인지 확인
 - Vat
@@ -68,31 +65,31 @@
 
 #### Payment
 
-- id
-  - DB 자체 관리 Auto-increment id
-- uid
-  - 관리번호
-  - uuid 중복 일 시 다시 생성
-- Amount
-  - 현재 결재 금액
-- Vat
-  - 부가 가치세
+|name|type|index|non null|
+|---|---|---|---|
+|ID|long|pk|true|
+|UID|varchar(20)|unique index|true|
+|CARD_INFO|varchar(300)|null|true|
+|AMOUNT|integer|null|true|
+|VAT|integer|null|true|
+|INSTALLMENT|integer|null|true|
+
   
 #### Cancel
 
-- id
-  - DB 자체 관리 Auto-increment id
-- uid
-  - 관리번호 payment와 동일
-- Amount
-  - 현재 취소 금액
-- Vat
-  - 취소 부가 가치세
+|name|type|index|non null|
+|---|---|---|---|
+|ID|long|pk|true|
+|UID|varchar(20)|unique index|true|
+|AMOUNT|integer|null|true|
+|VAT|integer|null|true|
 
 ### 통신구간 (String 데이터)
 
 #### StringData
 
-- id
-- uid
-- String
+|name|type|index|non null|
+|---|---|---|---|
+|ID|long|pk|true|
+|UID|varchar(20)|unique index|true|
+|String|varchar(450)|null|true|

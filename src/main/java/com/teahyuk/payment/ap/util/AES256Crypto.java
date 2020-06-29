@@ -9,6 +9,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -21,7 +22,7 @@ public class AES256Crypto {
     public static String encrypt(String msg, String key) throws CryptoException {
         try {
             SecureRandom random = new SecureRandom();
-            byte bytes[] = new byte[20];
+            byte[] bytes = new byte[20];
             random.nextBytes(bytes);
             byte[] saltBytes = bytes;
 
@@ -40,7 +41,7 @@ public class AES256Crypto {
 
             // Initial Vector(1단계 암호화 블록용)
             byte[] ivBytes = params.getParameterSpec(IvParameterSpec.class).getIV();
-            byte[] encryptedTextBytes = cipher.doFinal(msg.getBytes("UTF-8"));
+            byte[] encryptedTextBytes = cipher.doFinal(msg.getBytes(StandardCharsets.UTF_8));
             byte[] buffer = new byte[saltBytes.length + ivBytes.length + encryptedTextBytes.length];
             System.arraycopy(saltBytes, 0, buffer, 0, saltBytes.length);
             System.arraycopy(ivBytes, 0, buffer, saltBytes.length, ivBytes.length);

@@ -1,6 +1,6 @@
 package com.teahyuk.payment.ap.domain.uid;
 
-import com.teahyuk.payment.ap.domain.CardNumber;
+import com.teahyuk.payment.ap.domain.card.CardNumber;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

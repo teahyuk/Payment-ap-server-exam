@@ -1,13 +1,17 @@
-package com.teahyuk.payment.ap.domain;
+package com.teahyuk.payment.ap.domain.card;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
+@Getter
 @EqualsAndHashCode
 @ToString
 public class Cvc {
     private final static String INVALID_FORMAT = "Create Cvc error, cvc must be 3 digits number, cvc=%s";
+
+    @JsonValue
     private final String cvc;
 
     public Cvc(String cvc) {
@@ -32,10 +36,5 @@ public class Cvc {
         } catch (NumberFormatException e) {
             return false;
         }
-    }
-
-    @JsonValue
-    public String getCvc() {
-        return cvc;
     }
 }

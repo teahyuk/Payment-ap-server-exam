@@ -1,10 +1,19 @@
 package com.teahyuk.payment.ap.dto;
 
-import com.teahyuk.payment.ap.domain.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.teahyuk.payment.ap.domain.Amount;
+import com.teahyuk.payment.ap.domain.Installment;
+import com.teahyuk.payment.ap.domain.Vat;
+import com.teahyuk.payment.ap.domain.card.CardInfo;
+import com.teahyuk.payment.ap.domain.card.CardNumber;
+import com.teahyuk.payment.ap.domain.card.Cvc;
+import com.teahyuk.payment.ap.domain.card.Validity;
+import com.teahyuk.payment.ap.domain.entity.Payment;
+import com.teahyuk.payment.ap.domain.uid.Uid;
+import com.teahyuk.payment.ap.util.CryptoException;
 import lombok.*;
 
 @Getter
-@Builder
 @EqualsAndHashCode
 @ToString
 public class PaymentRequest {

@@ -1,4 +1,4 @@
-package com.teahyuk.payment.ap.entity;
+package com.teahyuk.payment.ap.domain.entity;
 
 import com.teahyuk.payment.ap.domain.uid.Uid;
 import lombok.AccessLevel;
@@ -7,19 +7,18 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-abstract class EntityId {
+abstract class EntityUid {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(length = Uid.LENGTH, nullable = false)
+    private String uid;
 
-    @Embedded
-    private Uid uid;
-
-    public EntityId(Uid uid) {
-        this.uid = uid;
+    public EntityUid(Uid uid) {
+        this.uid = uid.getUid();
     }
 }

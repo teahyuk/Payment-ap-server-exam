@@ -1,6 +1,5 @@
 package com.teahyuk.payment.ap.domain.uid;
 
-import com.teahyuk.payment.ap.domain.uid.Uid;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -8,8 +7,8 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class UidTest {
-    public static Uid createTestUid(String uid){
-        return new Uid(String.format("%20s",uid));
+    public static Uid createTestUid(String uid) {
+        return new Uid(String.format("%20s", uid));
     }
 
     @ParameterizedTest

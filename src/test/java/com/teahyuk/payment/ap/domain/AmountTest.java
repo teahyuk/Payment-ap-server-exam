@@ -31,4 +31,14 @@ class AmountTest {
         assertThat(new Amount(amount).isValidVat(new Vat(vat)))
                 .isEqualTo(expectValid);
     }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "1100,100",
+            "20000,1818"
+    })
+    void createVatTest(int amount, int expectDefaultVat){
+        assertThat(new Amount(amount).createDefaultVat().getVat())
+            .isEqualTo(expectDefaultVat);
+    }
 }

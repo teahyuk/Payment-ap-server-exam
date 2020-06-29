@@ -1,4 +1,4 @@
-package com.teahyuk.payment.ap.entity;
+package com.teahyuk.payment.ap.domain.entity;
 
 import com.teahyuk.payment.ap.domain.uid.Uid;
 import lombok.AccessLevel;
@@ -12,10 +12,10 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
-public class StringData extends EntityId {
+public class StringData extends EntityUid {
     @Column(length = 450)
     private String string;
 

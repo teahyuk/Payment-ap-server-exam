@@ -10,14 +10,14 @@ class InstallmentTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 2, 12})
     void constructor(int installment) {
-        assertThatCode(() -> new Installment(installment))
+        assertThatCode(() -> Installment.of(installment))
                 .doesNotThrowAnyException();
     }
 
     @ParameterizedTest
     @ValueSource(ints = {-1, 1, 13})
     void constructorError(int installment) {
-        assertThatThrownBy(() -> new Installment(installment))
+        assertThatThrownBy(() -> Installment.of(installment))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

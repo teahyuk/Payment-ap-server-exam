@@ -1,4 +1,4 @@
-package com.teahyuk.payment.ap.domain;
+package com.teahyuk.payment.ap.domain.card;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.EqualsAndHashCode;
@@ -11,7 +11,7 @@ import java.time.format.DateTimeParseException;
 @EqualsAndHashCode
 @ToString
 public class Validity {
-    private final static String INVALID_FORMAT = "Create validity error, validity must follow this format %s. validity=%s";
+    private final static String INVALID_FORMAT = "Create validity error, validity must follow this format '%s'. validity=%s";
     private final static String VALIDITY_FORMAT = "MMyy";
     private final YearMonth validity;
 
