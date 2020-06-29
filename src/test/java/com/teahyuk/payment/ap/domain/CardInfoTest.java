@@ -9,9 +9,9 @@ class CardInfoTest {
     @Test
     void rawStringTest() {
         CardInfo cardInfo = CardInfo.builder()
-                .cardNumber(new CardNumber("0123456789012345"))
-                .validity(new Validity("0125"))
-                .cvc(new Cvc("623"))
+                .cardNumber(CardNumberTest.cardNumber1)
+                .validity(ValidityTest.thisMonthValidity)
+                .cvc(CvcTest.cvc1)
                 .build();
 
         assertThat(cardInfo)

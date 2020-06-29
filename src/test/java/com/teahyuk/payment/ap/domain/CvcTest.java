@@ -6,7 +6,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class CvcTest {
+public class CvcTest {
+    public static final Cvc cvc1 = new Cvc("000");
+
     @ParameterizedTest
     @ValueSource(strings = {"000", "900", "999"})
     void constructor(String cvc) {

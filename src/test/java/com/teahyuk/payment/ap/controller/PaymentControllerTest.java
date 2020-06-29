@@ -20,10 +20,10 @@ class PaymentControllerTest {
     @Test
     void testPayment() {
         PaymentRequest paymentRequest = PaymentRequest.builder()
-                .cardNumber(new CardNumber("0123456789"))
+                .cardNumber(CardNumberTest.cardNumber1)
                 .amount(new Amount(20000))
-                .cvc(new Cvc("252"))
-                .validity(new Validity("0124"))
+                .cvc(CvcTest.cvc1)
+                .validity(ValidityTest.thisMonthValidity)
                 .installment(new Installment(12))
                 .vat(new Vat(200000))
                 .build();

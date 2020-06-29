@@ -6,7 +6,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class CardNumberTest {
+public class CardNumberTest {
+    public static final CardNumber cardNumber1 = new CardNumber("0123456789");
+
+
     @ParameterizedTest
     @ValueSource(strings = {"1234567890", "1234567890123456", "0001234567"})
     void constructor(String cardNumber) {

@@ -1,9 +1,6 @@
 package com.teahyuk.payment.ap.provider;
 
-import com.teahyuk.payment.ap.domain.CardInfo;
-import com.teahyuk.payment.ap.domain.CardNumber;
-import com.teahyuk.payment.ap.domain.Cvc;
-import com.teahyuk.payment.ap.domain.Validity;
+import com.teahyuk.payment.ap.domain.*;
 import com.teahyuk.payment.ap.util.AES256Crypto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +17,9 @@ class CardInfoCryptoProviderTest {
     @Test
     void testEncryptAndDecrypt() throws Exception {
         CardInfo cardInfo = CardInfo.builder()
-                .cardNumber(new CardNumber("000000000012345"))
-                .validity(new Validity("0125"))
-                .cvc(new Cvc("326"))
+                .cardNumber(CardNumberTest.cardNumber1)
+                .validity(ValidityTest.thisMonthValidity)
+                .cvc(CvcTest.cvc1)
                 .build();
         String uid = "testtesttesttesttest";
         String encrypted = cardInfoCryptoProvider.encrypt(cardInfo, uid);

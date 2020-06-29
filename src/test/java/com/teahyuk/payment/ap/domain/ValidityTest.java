@@ -1,13 +1,21 @@
 package com.teahyuk.payment.ap.domain;
 
-import lombok.EqualsAndHashCode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+
 import static org.assertj.core.api.Assertions.*;
 
-class ValidityTest {
+public class ValidityTest {
+    public static final Validity thisMonthValidity = new Validity(getYearMonthString(YearMonth.now()));
+    public static final Validity lastMonthValidity = new Validity(getYearMonthString(YearMonth.now().minusMonths(1)));
+
+    private static String getYearMonthString(YearMonth yearMonth) {
+        return yearMonth.format(DateTimeFormatter.ofPattern("MMyy"));
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"0119", "1211"})
