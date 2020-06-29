@@ -8,8 +8,10 @@ import com.teahyuk.payment.ap.domain.card.CardInfo;
 import com.teahyuk.payment.ap.domain.card.CardNumber;
 import com.teahyuk.payment.ap.domain.card.Cvc;
 import com.teahyuk.payment.ap.domain.card.Validity;
-import com.teahyuk.payment.ap.domain.entity.Payment;
+import com.teahyuk.payment.ap.domain.entity.StringData;
 import com.teahyuk.payment.ap.domain.uid.Uid;
+import com.teahyuk.payment.ap.dto.card.company.RequestType;
+import com.teahyuk.payment.ap.dto.card.company.StringDataRequest;
 import com.teahyuk.payment.ap.util.CryptoException;
 import lombok.*;
 
@@ -29,4 +31,42 @@ public class PaymentRequest {
     @NonNull
     private final Amount amount;
     private final Vat vat;
+
+    @Builder
+    public PaymentRequest(@NonNull CardNumber cardNumber, @NonNull Validity validity, @NonNull Cvc cvc, @NonNull Installment installment, @NonNull Amount amount, Vat vat) {
+        this.cardNumber = cardNumber;
+        this.validity = validity;
+        this.cvc = cvc;
+        this.installment = installment;
+        this.amount = amount;
+        this.vat = vat == null ? amount.createDefaultVat() : vat;
+    }
+
+    private CardInfo getCardInfo() {
+        return CardInfo.builder()
+                .cardNumber(cardNumber)
+                .cvc(cvc)
+                .validity(validity)
+                .build();
+    }
+
+    @JsonIgnore
+    public StringData getStringData() throws CryptoException {
+        Uid uid = Uid.randomCreator()
+                .cardNumber(cardNumber)
+                .randomBuild();
+
+        return StringData.builder()
+                .string(StringDataRequest.builder()
+                        .requestType(RequestType.PAYMENT)
+                        .uid(uid)
+                        .cardInfo(getCardInfo())
+                        .installment(installment)
+                        .amount(amount)
+                        .vat(vat)
+                        .build()
+                        .getStringData())
+                .uid(uid)
+                .build();
+    }
 }
