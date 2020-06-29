@@ -17,8 +17,8 @@ import java.util.Base64;
  * @see <a href="https://offbyone.tistory.com/286>https://offbyone.tistory.com/286</a>
  */
 @Component
-public class AES256Crypto implements CryptoUtil {
-    public String encrypt(String msg, String key) throws CryptoException {
+public class AES256Crypto {
+    public static String encrypt(String msg, String key) throws CryptoException {
         try {
             SecureRandom random = new SecureRandom();
             byte bytes[] = new byte[20];
@@ -28,8 +28,7 @@ public class AES256Crypto implements CryptoUtil {
             // Password-Based Key Derivation function 2
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 
-            // 70000번 해시하여 256 bit 길이의 키를 만든다.
-            PBEKeySpec spec = new PBEKeySpec(key.toCharArray(), saltBytes, 70000, 256);
+            PBEKeySpec spec = new PBEKeySpec(key.toCharArray(), saltBytes, 50000, 256);
             SecretKey secretKey = factory.generateSecret(spec);
             SecretKeySpec secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
 
@@ -52,7 +51,7 @@ public class AES256Crypto implements CryptoUtil {
         }
     }
 
-    public String decrypt(String msg, String key) throws CryptoException {
+    public static String decrypt(String msg, String key) throws CryptoException {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             ByteBuffer buffer = ByteBuffer.wrap(Base64.getDecoder().decode(msg));
@@ -65,7 +64,7 @@ public class AES256Crypto implements CryptoUtil {
             buffer.get(encryptedTextBytes);
 
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            PBEKeySpec spec = new PBEKeySpec(key.toCharArray(), saltBytes, 70000, 256);
+            PBEKeySpec spec = new PBEKeySpec(key.toCharArray(), saltBytes, 50000, 256);
 
             SecretKey secretKey = factory.generateSecret(spec);
             SecretKeySpec secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
