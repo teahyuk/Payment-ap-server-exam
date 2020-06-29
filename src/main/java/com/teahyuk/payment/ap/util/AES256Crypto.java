@@ -1,5 +1,6 @@
 package com.teahyuk.payment.ap.util;
 
+import lombok.NonNull;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
@@ -19,7 +20,7 @@ import java.util.Base64;
  */
 @Component
 public class AES256Crypto {
-    public static String encrypt(String msg, String key) throws CryptoException {
+    public static String encrypt(@NonNull String msg, @NonNull String key) throws CryptoException {
         try {
             SecureRandom random = new SecureRandom();
             byte[] bytes = new byte[20];
@@ -52,7 +53,7 @@ public class AES256Crypto {
         }
     }
 
-    public static String decrypt(String msg, String key) throws CryptoException {
+    public static String decrypt(@NonNull String msg, @NonNull String key) throws CryptoException {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             ByteBuffer buffer = ByteBuffer.wrap(Base64.getDecoder().decode(msg));
