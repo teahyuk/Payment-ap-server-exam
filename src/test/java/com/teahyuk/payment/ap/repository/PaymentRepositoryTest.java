@@ -49,7 +49,6 @@ class PaymentRepositoryTest {
     private Cancel saveCancel(Payment payment, Uid uid, int amount, int vat) {
         Cancel cancel = Cancel.builder()
                 .amount(new Amount(amount))
-                .cardInfo(payment.getCardInfo())
                 .uid(uid)
                 .payment(payment)
                 .vat(new Vat(vat))
@@ -62,9 +61,7 @@ class PaymentRepositoryTest {
         Payment payment = Payment.builder()
                 .uid(uid)
                 .amount(new Amount(amount))
-                .cardInfo(dummyCardInfo)
                 .vat(new Vat(vat))
-                .installment(Installment.of(0))
                 .build();
         paymentRepository.save(payment);
         return payment;

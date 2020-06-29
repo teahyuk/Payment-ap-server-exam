@@ -18,19 +18,12 @@ import java.util.List;
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
 public class Payment extends AmountInfo {
-    @Column(length = 300, nullable = false)
-    private String cardInfo;
-
-    @Column
-    private int installment;
 
     @OneToMany(mappedBy = "payment")
     private final List<Cancel> cancels = new ArrayList<>();
 
     @Builder
-    public Payment(Uid uid, String cardInfo, Installment installment, Amount amount, Vat vat) {
+    public Payment(Uid uid, Amount amount, Vat vat) {
         super(uid, amount, vat);
-        this.cardInfo = cardInfo;
-        this.installment = installment.getInstallment();
     }
 }
