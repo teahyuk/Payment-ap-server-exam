@@ -69,21 +69,9 @@
 |---|---|---|---|
 |ID|long|pk|true|
 |UID|varchar(20)|unique index|true|
-|CARD_INFO|varchar(300)|null|true|
 |AMOUNT|integer|null|true|
 |VAT|integer|null|true|
-|INSTALLMENT|integer|null|true|
-
   
-#### Cancel
-
-|name|type|index|non null|
-|---|---|---|---|
-|ID|long|pk|true|
-|UID|varchar(20)|unique index|true|
-|AMOUNT|integer|null|true|
-|VAT|integer|null|true|
-
 ### 통신구간 (String 데이터)
 
 #### StringData

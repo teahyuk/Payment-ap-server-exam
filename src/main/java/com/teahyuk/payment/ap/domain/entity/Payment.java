@@ -1,29 +1,30 @@
 package com.teahyuk.payment.ap.domain.entity;
 
 import com.teahyuk.payment.ap.domain.Amount;
-import com.teahyuk.payment.ap.domain.Installment;
 import com.teahyuk.payment.ap.domain.Vat;
 import com.teahyuk.payment.ap.domain.uid.Uid;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
-public class Payment extends AmountInfo {
-
-    @OneToMany(mappedBy = "payment")
-    private final List<Cancel> cancels = new ArrayList<>();
+public class Payment extends EntityUid {
+    @Column
+    private int amount;
+    @Column
+    private int vat;
 
     @Builder
     public Payment(Uid uid, Amount amount, Vat vat) {
-        super(uid, amount, vat);
+        super(uid);
+        this.amount = amount.getAmount();
+        this.vat = vat.getVat();
     }
 }
