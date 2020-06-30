@@ -27,8 +27,8 @@ public class CardInfo {
         return String.join(MEMBER_SEPARATOR, cardNumber.getCardNumber(), validity.getValidity(), cvc.getCvc());
     }
 
-    public static CardInfo ofEncryptedString(String encryptedString, String uid) throws CryptoException {
-        return ofRawString(AES256Crypto.decrypt(encryptedString, uid));
+    public static CardInfo ofEncryptedString(String encryptedString, Uid uid) throws CryptoException {
+        return ofRawString(AES256Crypto.decrypt(encryptedString, uid.getUid()));
     }
 
     private static CardInfo ofRawString(String rawString) {

@@ -85,13 +85,13 @@ class CardCompanyDtoTest {
 
         String serializedString = cardCompanyDto.getSerializedString();
         assertThat(serializedString.substring(0, serializedString.length() - 347)) //암호화 되지 않은 부분 확인
-                .isEqualTo(getExpectedString(RequestType.PAYMENT.name(), uid, cardNumber, validity, cvc, amount, vat, installment, originUid));
+                .isEqualTo(getSerializedStringWithoutEncrypted(RequestType.PAYMENT.name(), uid, cardNumber, validity, cvc, amount, vat, installment, originUid));
         String encryptedCardInfo = serializedString.substring(103, 403).trim();
-        assertThat(CardInfo.ofEncryptedString(encryptedCardInfo, uid))
+        assertThat(CardInfo.ofEncryptedString(encryptedCardInfo, UidTest.createTestUid(uid)))
                 .isEqualTo(cardInfo);
     }
 
-    private String getExpectedString(String requestType, String uid, String cardNumber, String validity, String cvc, int amount, int vat, int installment, String originUid) {
+    private String getSerializedStringWithoutEncrypted(String requestType, String uid, String cardNumber, String validity, String cvc, int amount, int vat, int installment, String originUid) {
         return String.format(
                 " 446" +
                         "%-10s" +
@@ -114,4 +114,37 @@ class CardCompanyDtoTest {
                 originUid);
     }
 
+    @Test
+    void fromSerializedStringTest() throws CryptoException {
+        String uid = "01234567890123456789";
+        String cardNumber = "0123456789123";
+        String validity = "0520";
+        String cvc = "012";
+        int amount = 20000;
+        int vat = 1818;
+        int installment = 12;
+        String originUid = "98765432109876543210";
+
+        CardInfo cardInfo = CardInfo.builder()
+                .cardNumber(new CardNumber(cardNumber))
+                .validity(new Validity(validity))
+                .cvc(new Cvc(cvc))
+                .build();
+
+        String serializedString = getSerializedStringWithoutEncrypted(RequestType.CANCEL.name(), uid, cardNumber, validity, cvc, amount, vat, installment, originUid);
+        serializedString = String.format("%s%-347s", serializedString, cardInfo.getEncryptedString(UidTest.createTestUid(uid)));
+
+        CardCompanyDto expectCardCompanyDto = CardCompanyDto.builder()
+                .requestType(RequestType.CANCEL)
+                .uid(UidTest.createTestUid(uid))
+                .cardInfo(cardInfo)
+                .amount(new Amount(amount))
+                .vat(new Vat(vat))
+                .installment(Installment.of(installment))
+                .originUid(UidTest.createTestUid(originUid))
+                .build();
+
+        assertThat(CardCompanyDto.fromSerialized(serializedString))
+                .isEqualTo(expectCardCompanyDto);
+    }
 }

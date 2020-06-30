@@ -32,7 +32,7 @@ public class CardCompanyDto {
                           Installment installment,
                           Uid originUid) {
 
-        installment = isInstallmentNullOrCancelType(requestType, installment) ? Installment.of(0) : installment;
+        installment = isInstallmentNullOrCancelType(requestType, installment);
 
         this.uid = uid;
         this.requestType = requestType;
@@ -43,8 +43,11 @@ public class CardCompanyDto {
         this.originUid = originUid;
     }
 
-    private boolean isInstallmentNullOrCancelType(@NonNull RequestType requestType, Installment installment) {
-        return installment == null || RequestType.CANCEL.equals(requestType);
+    private Installment isInstallmentNullOrCancelType(@NonNull RequestType requestType, Installment installment) {
+        if (installment == null || RequestType.CANCEL.equals(requestType)) {
+            return Installment.of(0);
+        }
+        return installment;
     }
 
     public boolean isValid() {
@@ -54,11 +57,19 @@ public class CardCompanyDto {
         return originUid != null;
     }
 
-    public static CardCompanyDto fromSerialized(String serializedString) {
-//        return new CardCompanyDto(RequestType.valueOf(serializedString.substring(4,10).trim()),
-//                new Uid(serializedString.substring(11,30)),
-//                CardInfo.ofEncryptedString());
-        return null;
+    public static CardCompanyDto fromSerialized(String serializedString) throws CryptoException {
+        Uid uid = new Uid(subString(serializedString, 14, 34));
+        return new CardCompanyDto(RequestType.valueOf(subString(serializedString, 4, 14)),
+                new Uid(subString(serializedString, 14, 34)),
+                CardInfo.ofEncryptedString(subString(serializedString, 103, 403), uid),
+                new Amount(Integer.parseInt(subString(serializedString, 63, 73))),
+                new Vat(Integer.parseInt(subString(serializedString, 73, 83))),
+                Installment.of(Integer.parseInt(subString(serializedString, 54, 56))),
+                new Uid(subString(serializedString, 83, 103)));
+    }
+
+    private static String subString(String serializedString, int startIdx, int endIdx) {
+        return serializedString.substring(startIdx, endIdx).trim();
     }
 
     public String getSerializedString() throws CryptoException {
