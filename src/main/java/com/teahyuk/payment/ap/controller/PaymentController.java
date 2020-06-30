@@ -2,11 +2,8 @@ package com.teahyuk.payment.ap.controller;
 
 import com.teahyuk.payment.ap.dto.PaymentRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -18,9 +15,10 @@ public class PaymentController {
     //TODO 서비스 구현
     //TODO Repository 구현
     @PostMapping
-    public Mono<?> addPayment(@Valid @RequestBody PaymentRequest paymentRequest) {
+    @ResponseBody
+    public ResponseEntity<?> addPayment(@Valid @RequestBody PaymentRequest paymentRequest) {
         logger.info("receivedRequest");
         logger.warn(paymentRequest.toString());
-        return Mono.just(paymentRequest);
+        return ResponseEntity.ok(paymentRequest);
     }
 }
