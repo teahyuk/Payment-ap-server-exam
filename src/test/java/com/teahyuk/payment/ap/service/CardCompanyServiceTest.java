@@ -7,12 +7,12 @@ import com.teahyuk.payment.ap.domain.card.CardInfo;
 import com.teahyuk.payment.ap.domain.card.CardNumberTest;
 import com.teahyuk.payment.ap.domain.card.CvcTest;
 import com.teahyuk.payment.ap.domain.card.ValidityTest;
-import com.teahyuk.payment.ap.domain.entity.StringData;
+import com.teahyuk.payment.ap.domain.entity.CardCompany;
 import com.teahyuk.payment.ap.domain.uid.Uid;
 import com.teahyuk.payment.ap.domain.uid.UidTest;
 import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
 import com.teahyuk.payment.ap.dto.card.company.RequestType;
-import com.teahyuk.payment.ap.repository.StringDataRepository;
+import com.teahyuk.payment.ap.repository.CardCompanyRepository;
 import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 class CardCompanyServiceTest {
 
     @Mock
-    StringDataRepository stringDataRepository;
+    CardCompanyRepository cardCompanyRepository;
 
     @InjectMocks
     CardCompanyService cardCompanyService;
@@ -48,8 +48,8 @@ class CardCompanyServiceTest {
                 .installment(Installment.of(11))
                 .build();
         Uid returnUid = UidTest.createTestUid("5235");
-        when(stringDataRepository.saveAndFlush(any()))
-                .thenReturn(StringData.builder()
+        when(cardCompanyRepository.saveAndFlush(any()))
+                .thenReturn(CardCompany.builder()
                         .uid(returnUid)
                         .build());
 

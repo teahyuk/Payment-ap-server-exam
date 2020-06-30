@@ -15,12 +15,12 @@ import javax.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
-public class StringData extends EntityUid {
+public class CardCompany extends EntityUid {
     @Column(length = 450)
     private String string;
 
     @Builder
-    public StringData(Uid uid, String string) {
+    public CardCompany(Uid uid, String string) {
         super(uid);
         this.string = string;
     }

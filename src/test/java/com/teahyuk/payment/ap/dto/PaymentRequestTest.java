@@ -6,7 +6,7 @@ import com.teahyuk.payment.ap.domain.Vat;
 import com.teahyuk.payment.ap.domain.card.CardNumberTest;
 import com.teahyuk.payment.ap.domain.card.CvcTest;
 import com.teahyuk.payment.ap.domain.card.ValidityTest;
-import com.teahyuk.payment.ap.domain.entity.StringData;
+import com.teahyuk.payment.ap.domain.entity.CardCompany;
 import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.Test;
 
@@ -37,10 +37,10 @@ class PaymentRequestTest {
                 .installment(Installment.of(0))
                 .amount(new Amount(20000))
                 .build();
-        StringData stringData = paymentRequest.getStringData();
+        CardCompany cardCompany = paymentRequest.getStringData();
 
-        assertThat(stringData.getUid())
-                .isEqualTo(stringData.getString().substring(14,34));
+        assertThat(cardCompany.getUid())
+                .isEqualTo(cardCompany.getString().substring(14,34));
     }
 
 }

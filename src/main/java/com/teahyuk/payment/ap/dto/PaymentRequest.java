@@ -8,7 +8,7 @@ import com.teahyuk.payment.ap.domain.card.CardInfo;
 import com.teahyuk.payment.ap.domain.card.CardNumber;
 import com.teahyuk.payment.ap.domain.card.Cvc;
 import com.teahyuk.payment.ap.domain.card.Validity;
-import com.teahyuk.payment.ap.domain.entity.StringData;
+import com.teahyuk.payment.ap.domain.entity.CardCompany;
 import com.teahyuk.payment.ap.domain.uid.Uid;
 import com.teahyuk.payment.ap.dto.card.company.RequestType;
 import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
@@ -51,12 +51,12 @@ public class PaymentRequest {
     }
 
     @JsonIgnore
-    public StringData getStringData() throws CryptoException {
+    public CardCompany getStringData() throws CryptoException {
         Uid uid = Uid.randomCreator()
                 .cardNumber(cardNumber)
                 .randomBuild();
 
-        return StringData.builder()
+        return CardCompany.builder()
                 .string(CardCompanyDto.builder()
                         .requestType(RequestType.PAYMENT)
                         .uid(uid)
