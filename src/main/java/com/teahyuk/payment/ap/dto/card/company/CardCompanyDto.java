@@ -71,7 +71,7 @@ public class CardCompanyDto {
         return serializedString.substring(startIdx, endIdx).trim();
     }
 
-    public String getSerializedString() throws CryptoException {
+    public String getSerializedString() {
         String payload = String.format("%-10s%-20s%-20s%02d%-4s%-3s%10s%010d%-20s%-300s%-47s",
                 requestType.name(),
                 uid.getUid(),

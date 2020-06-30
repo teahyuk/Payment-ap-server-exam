@@ -13,7 +13,6 @@ import com.teahyuk.payment.ap.domain.uid.UidTest;
 import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
 import com.teahyuk.payment.ap.dto.card.company.RequestType;
 import com.teahyuk.payment.ap.repository.CardCompanyRepository;
-import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,7 +33,7 @@ class CardCompanyServiceTest {
     CardCompanyService cardCompanyService;
 
     @Test
-    void requestToCardCompanyTest() throws CryptoException {
+    void requestToCardCompanyTest() {
         CardCompanyDto cardCompanyDto = CardCompanyDto.builder()
                 .requestType(RequestType.PAYMENT)
                 .uid(UidTest.createTestUid("312512512"))

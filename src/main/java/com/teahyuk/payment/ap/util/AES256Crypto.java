@@ -20,12 +20,11 @@ import java.util.Base64;
  */
 @Component
 public class AES256Crypto {
-    public static String encrypt(@NonNull String msg, @NonNull String key) throws CryptoException {
+    public static String encrypt(@NonNull String msg, @NonNull String key) {
         try {
             SecureRandom random = new SecureRandom();
-            byte[] bytes = new byte[20];
-            random.nextBytes(bytes);
-            byte[] saltBytes = bytes;
+            byte[] saltBytes = new byte[20];
+            random.nextBytes(saltBytes);
 
             // Password-Based Key Derivation function 2
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");

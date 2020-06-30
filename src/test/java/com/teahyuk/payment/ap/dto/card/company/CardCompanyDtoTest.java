@@ -59,7 +59,7 @@ class CardCompanyDtoTest {
     }
 
     @Test
-    void getSerializedDataTest() throws CryptoException {
+    void getSerializedDataTest() {
         String uid = "01234567890123456789";
         String cardNumber = "0123456789123";
         String validity = "0520";
@@ -112,7 +112,7 @@ class CardCompanyDtoTest {
     }
 
     @Test
-    void fromSerializedStringTest() throws CryptoException {
+    void fromSerializedStringTest() {
         String uid = "01234567890123456789";
         String cardNumber = "0123456789123";
         String validity = "0520";
@@ -138,7 +138,7 @@ class CardCompanyDtoTest {
     }
 
     @Test
-    void fromSerializedStringOriginUidNullTest() throws CryptoException {
+    void fromSerializedStringOriginUidNullTest() {
         String uid = "01234567890123456789";
         String cardNumber = "0123456789123";
         String validity = "0520";

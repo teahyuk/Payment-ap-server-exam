@@ -25,7 +25,7 @@ class CardInfoTest {
     }
 
     @Test
-    void encryptAndDecryptTest() throws CryptoException {
+    void encryptAndDecryptTest() {
         String encryptedCardInfo = cardInfo.getEncryptedString(keyUid);
 
         assertThat(cardInfo)
@@ -33,7 +33,7 @@ class CardInfoTest {
     }
 
     @Test
-    void decryptExpectError() throws CryptoException {
+    void decryptExpectError() {
         String encryptedCardInfo = cardInfo.getEncryptedString(keyUid);
 
         assertThatThrownBy(() -> CardInfo.ofEncryptedString(encryptedCardInfo, UidTest.createTestUid("456")))

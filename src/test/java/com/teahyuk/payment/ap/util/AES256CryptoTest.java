@@ -15,7 +15,7 @@ class AES256CryptoTest {
 
 
     @BeforeEach
-    void setting() throws Exception {
+    void setting() {
         encrypted1 = AES256Crypto.encrypt(plainText, key);
         encrypted2 = AES256Crypto.encrypt(plainText, key);
     }
@@ -29,7 +29,7 @@ class AES256CryptoTest {
 
     @Test
     @DisplayName("매번 다른 암호화 된 값 이지만 같은 key 로 복호화가 가능 하다.")
-    void decryptTest() throws CryptoException {
+    void decryptTest() {
         assertThat(plainText)
                 .isEqualTo(AES256Crypto.decrypt(encrypted1, key));
         assertThat(plainText)
