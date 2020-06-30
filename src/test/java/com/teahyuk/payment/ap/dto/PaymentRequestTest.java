@@ -6,7 +6,6 @@ import com.teahyuk.payment.ap.domain.Vat;
 import com.teahyuk.payment.ap.domain.card.CardNumberTest;
 import com.teahyuk.payment.ap.domain.card.CvcTest;
 import com.teahyuk.payment.ap.domain.card.ValidityTest;
-import com.teahyuk.payment.ap.domain.entity.Payment;
 import com.teahyuk.payment.ap.domain.entity.StringData;
 import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.Test;

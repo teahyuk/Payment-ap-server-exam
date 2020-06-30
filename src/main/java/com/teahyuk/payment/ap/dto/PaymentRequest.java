@@ -11,7 +11,7 @@ import com.teahyuk.payment.ap.domain.card.Validity;
 import com.teahyuk.payment.ap.domain.entity.StringData;
 import com.teahyuk.payment.ap.domain.uid.Uid;
 import com.teahyuk.payment.ap.dto.card.company.RequestType;
-import com.teahyuk.payment.ap.dto.card.company.StringDataRequest;
+import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
 import com.teahyuk.payment.ap.util.CryptoException;
 import lombok.*;
 
@@ -57,7 +57,7 @@ public class PaymentRequest {
                 .randomBuild();
 
         return StringData.builder()
-                .string(StringDataRequest.builder()
+                .string(CardCompanyDto.builder()
                         .requestType(RequestType.PAYMENT)
                         .uid(uid)
                         .cardInfo(getCardInfo())
@@ -65,7 +65,7 @@ public class PaymentRequest {
                         .amount(amount)
                         .vat(vat)
                         .build()
-                        .getStringData())
+                        .getSerializedString())
                 .uid(uid)
                 .build();
     }
