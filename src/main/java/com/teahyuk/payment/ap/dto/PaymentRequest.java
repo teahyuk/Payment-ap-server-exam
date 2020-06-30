@@ -8,11 +8,8 @@ import com.teahyuk.payment.ap.domain.card.CardInfo;
 import com.teahyuk.payment.ap.domain.card.CardNumber;
 import com.teahyuk.payment.ap.domain.card.Cvc;
 import com.teahyuk.payment.ap.domain.card.Validity;
-import com.teahyuk.payment.ap.domain.entity.CardCompany;
-import com.teahyuk.payment.ap.domain.uid.Uid;
-import com.teahyuk.payment.ap.dto.card.company.RequestType;
 import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
-import com.teahyuk.payment.ap.util.CryptoException;
+import com.teahyuk.payment.ap.dto.card.company.RequestType;
 import lombok.*;
 
 @Getter
@@ -51,22 +48,13 @@ public class PaymentRequest {
     }
 
     @JsonIgnore
-    public CardCompany getStringData() throws CryptoException {
-        Uid uid = Uid.randomCreator()
-                .cardNumber(cardNumber)
-                .randomBuild();
-
-        return CardCompany.builder()
-                .string(CardCompanyDto.builder()
-                        .requestType(RequestType.PAYMENT)
-                        .uid(uid)
-                        .cardInfo(getCardInfo())
-                        .installment(installment)
-                        .amount(amount)
-                        .vat(vat)
-                        .build()
-                        .getSerializedString())
-                .uid(uid)
+    public CardCompanyDto getCardCompanyDto() {
+        return CardCompanyDto.builder()
+                .requestType(RequestType.PAYMENT)
+                .cardInfo(getCardInfo())
+                .installment(installment)
+                .amount(amount)
+                .vat(vat)
                 .build();
     }
 }

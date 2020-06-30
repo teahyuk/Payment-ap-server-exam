@@ -37,8 +37,8 @@ class PaymentServiceTest {
     }
 
     @Test
-    void requestPaymentTest() throws CryptoException {
-        PaymentRequest paymentRequest = PaymentRequestTest.paymentRequest1;
+    void requestPaymentTest() {
+        PaymentRequest paymentRequest = PaymentRequestTest.paymentRequest;
         Uid insertedUid = paymentService.requestPayment(paymentRequest);
         assertThat(paymentRepository.findByUid(insertedUid.getUid()))
                 .isNotEmpty();

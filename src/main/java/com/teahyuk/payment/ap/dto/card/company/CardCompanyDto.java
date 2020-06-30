@@ -4,6 +4,7 @@ import com.teahyuk.payment.ap.domain.Amount;
 import com.teahyuk.payment.ap.domain.Installment;
 import com.teahyuk.payment.ap.domain.Vat;
 import com.teahyuk.payment.ap.domain.card.CardInfo;
+import com.teahyuk.payment.ap.domain.entity.CardCompany;
 import com.teahyuk.payment.ap.domain.uid.Uid;
 import com.teahyuk.payment.ap.util.CryptoException;
 import lombok.*;
@@ -13,7 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 @Getter
 @EqualsAndHashCode
 public class CardCompanyDto {
-    private final Uid uid;
+    private Uid uid;
     private final RequestType requestType;
     private final CardInfo cardInfo;
     private final Amount amount;
@@ -23,15 +24,12 @@ public class CardCompanyDto {
 
     @Builder
     public CardCompanyDto(@NonNull RequestType requestType,
-                          @NonNull Uid uid,
+                          Uid uid,
                           @NonNull CardInfo cardInfo,
                           @NonNull Amount amount,
                           @NonNull Vat vat,
-                          Installment installment,
+                          @NonNull Installment installment,
                           Uid originUid) {
-
-        installment = isInstallmentNullOrCancelType(requestType, installment);
-
         this.uid = uid;
         this.requestType = requestType;
         this.cardInfo = cardInfo;
@@ -39,27 +37,17 @@ public class CardCompanyDto {
         this.vat = vat;
         this.installment = installment;
         this.originUid = originUid;
-    }
 
-    private Installment isInstallmentNullOrCancelType(@NonNull RequestType requestType, Installment installment) {
-        if (installment == null || RequestType.CANCEL.equals(requestType)) {
-            return Installment.of(0);
+        if (this.uid == null) {
+            refreshUid();
         }
-        return installment;
-    }
-
-    public boolean isValid() {
-        if (RequestType.PAYMENT.equals(requestType)) {
-            return originUid == null;
-        }
-        return originUid != null;
     }
 
     public static CardCompanyDto fromSerialized(String serializedString) throws CryptoException {
         Uid uid = new Uid(serializedString.substring(14, 34));
         String originUid = serializedString.substring(83, 103).trim();
         return new CardCompanyDto(RequestType.valueOf(subString(serializedString, 4, 14)),
-                new Uid(serializedString.substring(14, 34)),
+                uid,
                 CardInfo.ofEncryptedString(subString(serializedString, 103, 403), uid),
                 new Amount(Integer.parseInt(subString(serializedString, 63, 73))),
                 new Vat(Integer.parseInt(subString(serializedString, 73, 83))),
@@ -86,5 +74,19 @@ public class CardCompanyDto {
                 Strings.EMPTY);
 
         return String.format("%4s%s", payload.length(), payload);
+    }
+
+    public Uid refreshUid() {
+        uid = Uid.randomCreator()
+                .cardNumber(cardInfo.getCardNumber())
+                .randomBuild();
+        return uid;
+    }
+
+    public CardCompany toEntity() {
+        return CardCompany.builder()
+                .string(getSerializedString())
+                .uid(uid)
+                .build();
     }
 }

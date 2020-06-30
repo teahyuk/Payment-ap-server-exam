@@ -13,30 +13,37 @@ import com.teahyuk.payment.ap.domain.uid.UidTest;
 import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
 import com.teahyuk.payment.ap.dto.card.company.RequestType;
 import com.teahyuk.payment.ap.repository.CardCompanyRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@DataJpaTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CardCompanyServiceTest {
 
-    @Mock
-    CardCompanyRepository cardCompanyRepository;
+    @Autowired
+    private CardCompanyRepository cardCompanyRepository;
 
-    @InjectMocks
-    CardCompanyService cardCompanyService;
+    private CardCompanyService cardCompanyService;
+
+    @BeforeEach
+    void setting() {
+        cardCompanyService = new CardCompanyService(cardCompanyRepository);
+    }
+
 
     @Test
     void requestToCardCompanyTest() {
+        Uid requestUid = UidTest.createTestUid("312512512");
         CardCompanyDto cardCompanyDto = CardCompanyDto.builder()
                 .requestType(RequestType.PAYMENT)
-                .uid(UidTest.createTestUid("312512512"))
+                .uid(requestUid)
                 .cardInfo(CardInfo.builder()
                         .cardNumber(CardNumberTest.cardNumber1)
                         .validity(ValidityTest.thisMonthValidity)
@@ -46,13 +53,33 @@ class CardCompanyServiceTest {
                 .vat(new Vat(23))
                 .installment(Installment.of(11))
                 .build();
-        Uid returnUid = UidTest.createTestUid("5235");
-        when(cardCompanyRepository.saveAndFlush(any()))
-                .thenReturn(CardCompany.builder()
-                        .uid(returnUid)
-                        .build());
 
         assertThat(cardCompanyService.requestToCardCompany(cardCompanyDto))
-                .isEqualTo(returnUid);
+                .isEqualTo(requestUid);
+    }
+
+    @Test
+    void requestDuplicateUidTest() {
+        Uid requestUid = UidTest.createTestUid("312512512");
+        CardCompanyDto cardCompanyDto = CardCompanyDto.builder()
+                .requestType(RequestType.PAYMENT)
+                .uid(requestUid)
+                .cardInfo(CardInfo.builder()
+                        .cardNumber(CardNumberTest.cardNumber1)
+                        .validity(ValidityTest.thisMonthValidity)
+                        .cvc(CvcTest.cvc1)
+                        .build())
+                .amount(new Amount(555))
+                .vat(new Vat(23))
+                .installment(Installment.of(11))
+                .build();
+
+        cardCompanyRepository.save(CardCompany.builder()
+                .uid(requestUid)
+                .string("requestedSerializedData")
+                .build());
+
+        assertThat(cardCompanyService.requestToCardCompany(cardCompanyDto))
+                .isNotEqualTo(requestUid);
     }
 }

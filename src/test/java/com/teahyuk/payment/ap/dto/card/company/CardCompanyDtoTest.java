@@ -4,9 +4,9 @@ import com.teahyuk.payment.ap.domain.Amount;
 import com.teahyuk.payment.ap.domain.Installment;
 import com.teahyuk.payment.ap.domain.Vat;
 import com.teahyuk.payment.ap.domain.card.*;
+import com.teahyuk.payment.ap.domain.entity.CardCompany;
 import com.teahyuk.payment.ap.domain.uid.Uid;
 import com.teahyuk.payment.ap.domain.uid.UidTest;
-import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -15,51 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CardCompanyDtoTest {
     @Test
-    void paymentValidTest() {
-        assertThat(buildStringDataRequest(RequestType.PAYMENT, Installment.of(0), null).isValid())
-                .isTrue();
-    }
-
-    @Test
-    void paymentInvalidTest() {
-        assertThat(buildStringDataRequest(RequestType.PAYMENT, null, UidTest.createTestUid("0123456")).isValid())
-                .isFalse();
-    }
-
-    @Test
-    void cancelValidTest() {
-        assertThat(buildStringDataRequest(RequestType.CANCEL, null, UidTest.createTestUid("0123456")).isValid())
-                .isTrue();
-    }
-
-    @Test
-    void cancelInvalidTest() {
-        assertThat(buildStringDataRequest(RequestType.CANCEL, Installment.of(0), null).isValid())
-                .isFalse();
-
-        assertThat(buildStringDataRequest(RequestType.CANCEL, null, null).isValid())
-                .isFalse();
-    }
-
-    private CardCompanyDto buildStringDataRequest(RequestType requestType, Installment installment,
-                                                  Uid originUid) {
-        return CardCompanyDto.builder()
-                .requestType(requestType)
-                .uid(UidTest.createTestUid("01234567890123456789"))
-                .cardInfo(CardInfo.builder()
-                        .cardNumber(CardNumberTest.cardNumber1)
-                        .validity(ValidityTest.thisMonthValidity)
-                        .cvc(new Cvc("012"))
-                        .build())
-                .amount(new Amount(20000))
-                .vat(new Vat(1818))
-                .installment(installment)
-                .originUid(originUid)
-                .build();
-    }
-
-    @Test
     void getSerializedDataTest() {
+        //given
         String uid = "01234567890123456789";
         String cardNumber = "0123456789123";
         String validity = "0520";
@@ -68,16 +25,17 @@ class CardCompanyDtoTest {
         int vat = 1818;
         int installment = 12;
         String originUid = "98765432109876543210";
-
         CardInfo cardInfo = CardInfo.builder()
                 .cardNumber(new CardNumber(cardNumber))
                 .validity(new Validity(validity))
                 .cvc(new Cvc(cvc))
                 .build();
-
         CardCompanyDto cardCompanyDto = buildCardCompanyDto(RequestType.PAYMENT, uid, amount, vat, installment, UidTest.createTestUid(originUid), cardInfo);
 
+        //when
         String serializedString = cardCompanyDto.getSerializedString();
+
+        //then
         assertThat(serializedString.substring(0, serializedString.length() - 347)) //암호화 되지 않은 부분 확인
                 .isEqualTo(getSerializedStringWithoutEncrypted(RequestType.PAYMENT.name(), uid, cardNumber, validity, cvc, amount, vat, installment, originUid));
         String encryptedCardInfo = serializedString.substring(103, 403).trim();
@@ -113,6 +71,7 @@ class CardCompanyDtoTest {
 
     @Test
     void fromSerializedStringTest() {
+        //given
         String uid = "01234567890123456789";
         String cardNumber = "0123456789123";
         String validity = "0520";
@@ -121,7 +80,6 @@ class CardCompanyDtoTest {
         int vat = 1818;
         int installment = 12;
         String originUid = "98765432109876543210";
-
         CardInfo cardInfo = CardInfo.builder()
                 .cardNumber(new CardNumber(cardNumber))
                 .validity(new Validity(validity))
@@ -131,14 +89,18 @@ class CardCompanyDtoTest {
         String serializedString = getSerializedStringWithoutEncrypted(RequestType.CANCEL.name(), uid, cardNumber, validity, cvc, amount, vat, installment, originUid);
         serializedString = String.format("%s%-347s", serializedString, cardInfo.getEncryptedString(UidTest.createTestUid(uid)));
 
-        CardCompanyDto expectCardCompanyDto = buildCardCompanyDto(RequestType.CANCEL, uid, amount, vat, installment, UidTest.createTestUid(originUid), cardInfo);
+        //when
+        CardCompanyDto deserializeDto = CardCompanyDto.fromSerialized(serializedString);
 
-        assertThat(CardCompanyDto.fromSerialized(serializedString))
+        //then
+        CardCompanyDto expectCardCompanyDto = buildCardCompanyDto(RequestType.CANCEL, uid, amount, vat, installment, UidTest.createTestUid(originUid), cardInfo);
+        assertThat(deserializeDto)
                 .isEqualTo(expectCardCompanyDto);
     }
 
     @Test
     void fromSerializedStringOriginUidNullTest() {
+        //given
         String uid = "01234567890123456789";
         String cardNumber = "0123456789123";
         String validity = "0520";
@@ -146,7 +108,6 @@ class CardCompanyDtoTest {
         int amount = 20000;
         int vat = 1818;
         int installment = 12;
-
         CardInfo cardInfo = CardInfo.builder()
                 .cardNumber(new CardNumber(cardNumber))
                 .validity(new Validity(validity))
@@ -156,9 +117,61 @@ class CardCompanyDtoTest {
         String serializedString = getSerializedStringWithoutEncrypted(RequestType.CANCEL.name(), uid, cardNumber, validity, cvc, amount, vat, installment, null);
         serializedString = String.format("%s%-347s", serializedString, cardInfo.getEncryptedString(UidTest.createTestUid(uid)));
 
-        CardCompanyDto expectCardCompanyDto = buildCardCompanyDto(RequestType.CANCEL, uid, amount, vat, installment, null, cardInfo);
+        //when
+        CardCompanyDto deserializeDto = CardCompanyDto.fromSerialized(serializedString);
 
-        assertThat(CardCompanyDto.fromSerialized(serializedString))
+        //then
+        CardCompanyDto expectCardCompanyDto = buildCardCompanyDto(RequestType.CANCEL, uid, amount, vat, installment, null, cardInfo);
+        assertThat(deserializeDto)
                 .isEqualTo(expectCardCompanyDto);
     }
+
+    @Test
+    void refreshUidTest() {
+        CardCompanyDto cardCompanyDto = CardCompanyDto.builder()
+                .cardInfo(CardInfo.builder()
+                        .cardNumber(CardNumberTest.cardNumber1)
+                        .validity(ValidityTest.thisMonthValidity)
+                        .cvc(CvcTest.cvc1)
+                        .build())
+                .amount(new Amount(11000))
+                .installment(Installment.of(5))
+                .requestType(RequestType.PAYMENT)
+                .vat(new Vat(1000))
+                .build();
+
+        Uid oldUid = cardCompanyDto.getUid();
+        Uid refUid = cardCompanyDto.refreshUid();
+        Uid newUid = cardCompanyDto.getUid();
+
+        assertThat(oldUid)
+                .isNotEqualTo(refUid)
+                .isNotEqualTo(newUid);
+        assertThat(refUid)
+                .isEqualTo(newUid);
+    }
+
+    @Test
+    void toEntityTest() {
+        CardCompanyDto cardCompanyDto = CardCompanyDto.builder()
+                .cardInfo(CardInfo.builder()
+                        .cardNumber(CardNumberTest.cardNumber1)
+                        .validity(ValidityTest.thisMonthValidity)
+                        .cvc(CvcTest.cvc1)
+                        .build())
+                .amount(new Amount(11000))
+                .installment(Installment.of(5))
+                .requestType(RequestType.PAYMENT)
+                .vat(new Vat(1000))
+                .uid(UidTest.createTestUid("4252"))
+                .build();
+
+        CardCompany cardCompany = cardCompanyDto.toEntity();
+
+        assertThat(cardCompany.getUid())
+                .isEqualTo(UidTest.createTestUid("4252").getUid());
+        assertThat(CardCompanyDto.fromSerialized(cardCompany.getString()))
+                .isEqualTo(cardCompanyDto);
+    }
+
 }
