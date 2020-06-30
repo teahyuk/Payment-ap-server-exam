@@ -13,8 +13,6 @@ import org.apache.logging.log4j.util.Strings;
 @Getter
 @EqualsAndHashCode
 public class CardCompanyDto {
-    private final static String INVALID_FORMAT = "StringDataRequest build error. %s must not be null when requestType is %s";
-
     private final Uid uid;
     private final RequestType requestType;
     private final CardInfo cardInfo;
@@ -58,14 +56,15 @@ public class CardCompanyDto {
     }
 
     public static CardCompanyDto fromSerialized(String serializedString) throws CryptoException {
-        Uid uid = new Uid(subString(serializedString, 14, 34));
+        Uid uid = new Uid(serializedString.substring(14, 34));
+        String originUid = serializedString.substring(83, 103).trim();
         return new CardCompanyDto(RequestType.valueOf(subString(serializedString, 4, 14)),
-                new Uid(subString(serializedString, 14, 34)),
+                new Uid(serializedString.substring(14, 34)),
                 CardInfo.ofEncryptedString(subString(serializedString, 103, 403), uid),
                 new Amount(Integer.parseInt(subString(serializedString, 63, 73))),
                 new Vat(Integer.parseInt(subString(serializedString, 73, 83))),
                 Installment.of(Integer.parseInt(subString(serializedString, 54, 56))),
-                new Uid(subString(serializedString, 83, 103)));
+                originUid.isEmpty() ? null : new Uid(originUid));
     }
 
     private static String subString(String serializedString, int startIdx, int endIdx) {
