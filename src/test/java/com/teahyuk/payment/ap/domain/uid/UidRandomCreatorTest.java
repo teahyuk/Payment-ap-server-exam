@@ -15,4 +15,14 @@ class UidRandomCreatorTest {
                 .isNotEqualTo(uidRandomCreator.randomBuild());
     }
 
+    @Test
+    void canNotHasBlackChar() {
+        UidRandomCreator uidRandomCreator = Uid.randomCreator()
+                .cardNumber(CardNumberTest.cardNumber1);
+        for (int i = 0; i < 10000; i++) {
+            assertThat(uidRandomCreator.randomBuild().getUid())
+                    .doesNotContain(" ");
+        }
+    }
+
 }

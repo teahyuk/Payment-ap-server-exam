@@ -26,7 +26,7 @@ public class UidRandomCreator {
     }
 
     private String longToBase64(long v) {
-        final char[] digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 /".toCharArray();
+        final char[] digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_/".toCharArray();
         int shift = 6;
         char[] buf = new char[64];
         int charPos = 64;
