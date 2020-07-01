@@ -31,7 +31,7 @@ public class CancelRequest {
             }
 
             return Cancel.builder()
-                    .uid(uid)
+                    .originUid(uid)
                     .amount(amount)
                     .vat(vat)
                     .build();

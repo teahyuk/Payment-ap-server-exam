@@ -9,10 +9,12 @@ import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.apache.logging.log4j.util.Strings;
 
 @Builder
 @EqualsAndHashCode
+@ToString
 public class RequestToCompanyObject {
     private RequestType requestType;
     private CardInfo cardInfo;
