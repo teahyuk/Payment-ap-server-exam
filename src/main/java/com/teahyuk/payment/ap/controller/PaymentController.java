@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class PaymentController {
     //TODO status-code 409 conflict
-    //TODO 500
 
     private final PaymentService paymentService;
 
