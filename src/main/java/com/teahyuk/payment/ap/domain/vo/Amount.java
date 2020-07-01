@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 @EqualsAndHashCode
 public class Amount {
@@ -15,13 +17,13 @@ public class Amount {
     @JsonValue
     private final int amount;
 
-    public Amount(int amount) {
+    public Amount(Integer amount) {
+        validationCheck(amount);
         this.amount = amount;
-        validationCheck();
     }
 
-    private void validationCheck() {
-        if (amount < MIN || MAX < amount) {
+    private void validationCheck(Integer amount) {
+        if (Objects.isNull(amount) || amount < MIN || MAX < amount) {
             throw new IllegalArgumentException(String.format(INVALID_FORMAT, MIN, MAX, amount));
         }
     }

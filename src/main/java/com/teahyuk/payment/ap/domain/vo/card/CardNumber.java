@@ -20,7 +20,7 @@ public class CardNumber {
     }
 
     private void validationCheck() {
-        int digits = cardNumber.length();
+        int digits = cardNumber == null ? 0 : cardNumber.length();
         if (digits < 10 || 16 < digits) {
             throw new IllegalArgumentException(String.format(INVALID_FORMAT, cardNumber));
         }

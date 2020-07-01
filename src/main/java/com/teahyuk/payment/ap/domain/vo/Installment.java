@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,13 +24,13 @@ public class Installment {
         this.installment = installment;
     }
 
-    public static Installment of(int installment) {
+    public static Installment of(Integer installment) {
         validationCheck(installment);
         return INSTALLMENT_MAP.get(installment);
     }
 
-    private static void validationCheck(int installment) {
-        if (!INSTALLMENT_MAP.containsKey(installment)) {
+    private static void validationCheck(Integer installment) {
+        if (Objects.isNull(installment) || !INSTALLMENT_MAP.containsKey(installment)) {
             throw new IllegalArgumentException(String.format(INVALID_FORMAT, installment));
         }
     }

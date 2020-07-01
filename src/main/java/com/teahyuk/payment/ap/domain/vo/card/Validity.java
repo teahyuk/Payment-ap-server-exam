@@ -18,7 +18,7 @@ public class Validity {
     public Validity(String validity) {
         try {
             this.validity = YearMonth.parse(validity, DateTimeFormatter.ofPattern(VALIDITY_FORMAT));
-        } catch (DateTimeParseException e) {
+        } catch (DateTimeParseException | NullPointerException e) {
             throw new IllegalArgumentException(String.format(INVALID_FORMAT, VALIDITY_FORMAT, validity));
         }
     }

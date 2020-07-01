@@ -1,9 +1,6 @@
 package com.teahyuk.payment.ap.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teahyuk.payment.ap.dto.request.PaymentRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,7 +17,6 @@ import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -41,36 +37,15 @@ class PaymentControllerTest {
     @ParameterizedTest
     @MethodSource("provideSuccessDto")
     void postPaymentTest(String cardNumber, String validity, String cvc, int installment, int amount, Integer vat) throws Exception {
-        PaymentRequest paymentRequest = PaymentRequest.builder()
-                .cardNumber(cardNumber)
-                .validity(validity)
-                .cvc(cvc)
-                .installment(installment)
-                .amount(amount)
-                .vat(vat)
-                .build();
+        String paymentRequest = getPaymentRequestString(cardNumber, validity, cvc, installment, amount, vat);
 
         assertRequest(paymentRequest, status().isOk());
     }
 
-    @Test
-    void postPaymentVatNullTest() throws Exception {
-        PaymentRequest paymentRequest = PaymentRequest.builder()
-                .cardNumber("0123456789")
-                .validity("0720")
-                .cvc("032")
-                .installment(4)
-                .amount(20000)
-                .build();
-
-        assertRequest(paymentRequest, status().isOk(), jsonPath("uid").isString());
-    }
-
-
-    private void assertRequest(PaymentRequest paymentRequest, ResultMatcher... resultMatchers) throws Exception {
+    private void assertRequest(String paymentRequest, ResultMatcher... resultMatchers) throws Exception {
         ResultActions resultActions = mvc.perform(
                 post("/v1/payment")
-                        .content(new ObjectMapper().writeValueAsString(paymentRequest))
+                        .content(paymentRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
         for (ResultMatcher resultMatcher : resultMatchers) {
@@ -87,22 +62,25 @@ class PaymentControllerTest {
                 Arguments.of("0123456789", "0720", "032", 1, 20000, 100),
                 Arguments.of("0123456789", "0720", "032", 4, 10, 100),
                 Arguments.of("0123456789", "0720", "032", 4, 20000, -1),
-                Arguments.of("0123456789", "0720", "032", 4, 20000, 20001));
+                Arguments.of("0123456789", "0720", "032", 4, 20000, 20001),
+                Arguments.of(null, "0720", "032", 4, 20000, 100),
+                Arguments.of("0123456789", null, "032", 4, 20000, 100),
+                Arguments.of("0123456789", "0720", null, 4, 20000, 100),
+                Arguments.of("0123456789", "0720", "032", null, 20000, 100),
+                Arguments.of("0123456789", "0720", "032", 4, null, 100));
     }
 
     @ParameterizedTest
     @MethodSource("provideBadRequestDto")
-    void paymentValidationCheck(String cardNumber, String validity, String cvc, int installment, int amount, Integer vat) throws Exception {
-        PaymentRequest paymentRequest = PaymentRequest.builder()
-                .cardNumber(cardNumber)
-                .validity(validity)
-                .cvc(cvc)
-                .installment(installment)
-                .amount(amount)
-                .vat(vat)
-                .build();
+    void paymentValidationCheck(String cardNumber, String validity, String cvc, Integer installment, Integer amount, Integer vat) throws Exception {
+        String paymentRequest = getPaymentRequestString(cardNumber, validity, cvc, installment, amount, vat);
 
         assertRequest(paymentRequest, status().isBadRequest());
+    }
+
+    private String getPaymentRequestString(String cardNumber, String validity, String cvc, Integer installment, Integer amount, Integer vat) {
+        return String.format("{\"cardNumber\":\"%s\",\"validity\":\"%s\",\"cvc\":\"%s\"," +
+                "\"installment\":%s,\"amount\":%s,\"vat\":%s}", cardNumber, validity, cvc, installment, amount, vat);
     }
 
 }

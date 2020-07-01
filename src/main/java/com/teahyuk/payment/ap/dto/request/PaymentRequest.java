@@ -26,8 +26,8 @@ public class PaymentRequest {
     private final String cardNumber;
     private final String validity;
     private final String cvc;
-    private final int installment;
-    private final int amount;
+    private final Integer installment;
+    private final Integer amount;
     private final Integer vat;
 
     @JsonIgnore
