@@ -32,7 +32,7 @@ class CancelApiTest {
     @Autowired
     private MockMvc mvc;
 
-    private static Stream<Arguments> provideSuccessDto() { // argument source method
+    private static Stream<Arguments> provideSuccessDto() {
         return Stream.of(
                 Arguments.of("01234567890123456789", 20000, 100),
                 Arguments.of("ba123sd65f4w9e8t7xx5", 20000, null));
@@ -47,7 +47,7 @@ class CancelApiTest {
                 jsonPath("uid").isString());
     }
 
-    private static Stream<Arguments> provideBadRequestDto() { // argument source method
+    private static Stream<Arguments> provideBadRequestDto() {
         return Stream.of(
                 Arguments.of("0123456789012345678", 100, null),
                 Arguments.of("01234567890123456789",100, 1000),

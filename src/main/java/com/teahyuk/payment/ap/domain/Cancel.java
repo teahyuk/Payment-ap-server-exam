@@ -1,5 +1,6 @@
 package com.teahyuk.payment.ap.domain;
 
+import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.RequestType;
@@ -19,7 +20,7 @@ import lombok.ToString;
 public class Cancel {
     private final Uid originUid;
     private final Amount amount;
-    private final Vat vat;
+    private Vat vat;
 
     public RequestToCompanyObject getRequestToObject(CardInfo cardInfo) {
         return RequestToCompanyObject.builder()
@@ -30,5 +31,36 @@ public class Cancel {
                 .vat(vat)
                 .originUid(originUid)
                 .build();
+    }
+
+    public boolean isCancelableWithSettingVat(PaymentStatus paymentStatus){
+        if(this.vat == null){
+            settingVat(paymentStatus.getVat());
+        }
+
+        return this.amount.le(paymentStatus.getAmount()) &&
+                this.vat.le(paymentStatus.getVat()) &&
+                isRemainingAmountIsGeVat(paymentStatus);
+    }
+
+    private void settingVat(int originVat) {
+        this.vat = this.amount.createDefaultVat();
+        if(!this.vat.le(originVat)){
+            this.vat = new Vat(originVat);
+        }
+    }
+
+    private boolean isRemainingAmountIsGeVat(PaymentStatus paymentStatus){
+        return this.amount.getRemaining(paymentStatus.getAmount())
+                >= this.vat.getRemaining(paymentStatus.getVat());
+    }
+
+    public void cancel(PaymentStatus paymentStatus){
+        if(!isCancelableWithSettingVat(paymentStatus)){
+            throw new IllegalStateException("can not cancel payment status!");
+        }
+
+        paymentStatus.setAmount(this.amount.getRemaining(paymentStatus.getAmount()));
+        paymentStatus.setVat(this.vat.getRemaining(paymentStatus.getVat()));
     }
 }

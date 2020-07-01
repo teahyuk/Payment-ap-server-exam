@@ -22,9 +22,9 @@ public class PaymentStatus extends EntityUid {
     private int vat;
 
     @Builder
-    public PaymentStatus(Uid uid, Amount amount, Vat vat) {
+    public PaymentStatus(Uid uid, int amount, int vat) {
         super(uid);
-        this.amount = amount.getAmount();
-        this.vat = vat.getVat();
+        this.amount = amount;
+        this.vat = vat;
     }
 }

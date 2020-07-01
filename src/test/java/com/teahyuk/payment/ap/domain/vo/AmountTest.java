@@ -1,7 +1,5 @@
-package com.teahyuk.payment.ap.domain;
+package com.teahyuk.payment.ap.domain.vo;
 
-import com.teahyuk.payment.ap.domain.vo.Amount;
-import com.teahyuk.payment.ap.domain.vo.Vat;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -42,5 +40,36 @@ class AmountTest {
     void createVatTest(int amount, int expectDefaultVat){
         assertThat(new Amount(amount).createDefaultVat().getVat())
             .isEqualTo(expectDefaultVat);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "100,1000,true",
+            "100,100,true",
+            "101,100,false"
+    })
+    void leTest(int amount, int thenAmount, boolean le){
+        assertThat(new Amount(amount).le(thenAmount))
+                .isEqualTo(le);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "100,1000,900",
+            "100,100,0"
+    })
+    void getRemainingTest(int amount, int thenAmount, int result) {
+        assertThat(new Amount(amount).getRemaining(thenAmount))
+                .isEqualTo(result);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "1000,100",
+            "100,105"
+    })
+    void getRemainingExceptionTest(int amount, int thenAmount) {
+        assertThatThrownBy(()->new Amount(amount).getRemaining(thenAmount))
+                .isInstanceOf(ArithmeticException.class);
     }
 }

@@ -32,7 +32,7 @@ class PaymentApiTest {
     @Autowired
     private MockMvc mvc;
 
-    private static Stream<Arguments> provideSuccessDto() { // argument source method
+    private static Stream<Arguments> provideSuccessDto() {
         return Stream.of(
                 Arguments.of("0123456789", "0720", "032", 4, 20000, 100),
                 Arguments.of("0123456789", "0720", "032", 4, 20000, null));
@@ -46,7 +46,7 @@ class PaymentApiTest {
                 jsonPath("uid").isString());
     }
 
-    private static Stream<Arguments> provideBadRequestDto() { // argument source method
+    private static Stream<Arguments> provideBadRequestDto() {
         return Stream.of(
                 Arguments.of("012345678", "0720", "032", 4, 20000, 100),
                 Arguments.of("0123456789", "0719", "032", 4, 20000, 100),

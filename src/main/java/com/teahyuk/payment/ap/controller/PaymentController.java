@@ -20,8 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RequestMapping("/v1/payment")
 @Slf4j
 public class PaymentController {
-    //TODO status-code 409 conflict
-    //TODO 404 notfound
+
 
     private final PaymentService paymentService;
 

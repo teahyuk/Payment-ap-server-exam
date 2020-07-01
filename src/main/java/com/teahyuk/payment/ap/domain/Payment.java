@@ -1,15 +1,11 @@
 package com.teahyuk.payment.ap.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.RequestType;
 import com.teahyuk.payment.ap.domain.vo.Vat;
 import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
-import com.teahyuk.payment.ap.domain.vo.card.CardNumber;
-import com.teahyuk.payment.ap.domain.vo.card.Cvc;
-import com.teahyuk.payment.ap.domain.vo.card.Validity;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.dto.card.company.RequestToCompanyObject;
 import lombok.*;
@@ -37,8 +33,8 @@ public class Payment {
     public PaymentStatus getPaymentStatus(Uid uid) {
         return PaymentStatus.builder()
                 .uid(uid)
-                .amount(amount)
-                .vat(vat)
+                .amount(amount.getAmount())
+                .vat(vat.getVat())
                 .build();
     }
 }
