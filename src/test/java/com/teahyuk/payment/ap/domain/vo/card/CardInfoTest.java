@@ -29,14 +29,14 @@ class CardInfoTest {
         String encryptedCardInfo = cardInfo.getEncryptedString(keyUid);
 
         assertThat(cardInfo)
-                .isEqualTo(CardInfo.ofEncryptedString(encryptedCardInfo, keyUid));
+                .isEqualTo(CardInfo.ofEncryptedString(encryptedCardInfo, keyUid.getUid()));
     }
 
     @Test
     void decryptExpectError() {
         String encryptedCardInfo = cardInfo.getEncryptedString(keyUid);
 
-        assertThatThrownBy(() -> CardInfo.ofEncryptedString(encryptedCardInfo, UidTest.createTestUid("456")))
+        assertThatThrownBy(() -> CardInfo.ofEncryptedString(encryptedCardInfo, "456"))
                 .isInstanceOf(CryptoException.class);
     }
 

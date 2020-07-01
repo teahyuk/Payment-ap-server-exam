@@ -40,7 +40,7 @@ class CardCompanyDtoTest {
         assertThat(serializedString.substring(0, serializedString.length() - 347)) //암호화 되지 않은 부분 확인
                 .isEqualTo(getSerializedStringWithoutEncrypted(RequestType.PAYMENT.name(), uid, cardNumber, validity, cvc, amount, vat, installment, originUid));
         String encryptedCardInfo = serializedString.substring(103, 403).trim();
-        assertThat(CardInfo.ofEncryptedString(encryptedCardInfo, UidTest.createTestUid(uid)))
+        assertThat(CardInfo.ofEncryptedString(encryptedCardInfo, uid))
                 .isEqualTo(cardInfo);
     }
 

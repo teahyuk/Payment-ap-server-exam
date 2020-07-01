@@ -49,7 +49,7 @@ public class CardCompanyDto {
         String originUid = serializedString.substring(83, 103).trim();
         return new CardCompanyDto(RequestType.valueOf(subString(serializedString, 4, 14)),
                 uid,
-                CardInfo.ofEncryptedString(subString(serializedString, 103, 403), uid),
+                CardInfo.ofEncryptedString(subString(serializedString, 103, 403), uid.getUid()),
                 new Amount(Integer.parseInt(subString(serializedString, 63, 73))),
                 new Vat(Integer.parseInt(subString(serializedString, 73, 83))),
                 Installment.of(Integer.parseInt(subString(serializedString, 54, 56))),
