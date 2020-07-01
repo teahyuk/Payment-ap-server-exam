@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.teahyuk.payment.ap.domain.Cancel;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Vat;
+import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.exception.BadRequestException;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class CancelRequest {
     private final Integer vat;
 
     @JsonIgnore
-    public Cancel getCancel() throws BadRequestException {
+    public Cancel getCancel(Uid uid) throws BadRequestException {
         try {
             Amount amount = new Amount(this.amount);
             Vat vat = this.vat == null ? amount.createDefaultVat() : new Vat(this.vat);
@@ -30,6 +31,7 @@ public class CancelRequest {
             }
 
             return Cancel.builder()
+                    .uid(uid)
                     .amount(amount)
                     .vat(vat)
                     .build();

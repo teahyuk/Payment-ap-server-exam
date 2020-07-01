@@ -40,7 +40,7 @@ public class PaymentController {
     @ResponseBody
     public ResponseEntity<UidResponse> addCancel(@PathVariable Uid id,
                                                  @RequestBody CancelRequest cancelRequest) throws BadRequestException {
-        cancelRequest.getCancel();
+        cancelRequest.getCancel(id);
         return ResponseEntity.ok(new UidResponse(id));
     }
 }
