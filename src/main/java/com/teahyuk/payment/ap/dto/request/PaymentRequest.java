@@ -28,7 +28,7 @@ public class PaymentRequest {
     private final Integer vat;
 
     @JsonIgnore
-    public Payment getPaymentRequest() throws BadRequestException {
+    public Payment getPayment() throws BadRequestException {
         try {
             Amount amount = new Amount(this.amount);
             Vat vat = this.vat == null ? amount.createDefaultVat() : new Vat(this.vat);

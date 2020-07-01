@@ -26,7 +26,7 @@ public class PaymentController {
     @PostMapping
     @ResponseBody
     public ResponseEntity<UidResponse> addPayment(@RequestBody PaymentRequest paymentRequest) throws BadRequestException {
-        return ResponseEntity.ok(new UidResponse(paymentService.requestPayment(paymentRequest.getPaymentRequest())));
+        return ResponseEntity.ok(new UidResponse(paymentService.requestPayment(paymentRequest.getPayment())));
     }
 
 }
