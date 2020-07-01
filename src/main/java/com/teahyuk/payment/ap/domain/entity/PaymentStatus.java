@@ -15,14 +15,14 @@ import javax.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
-public class PaymentState extends EntityUid {
+public class PaymentStatus extends EntityUid {
     @Column
     private int amount;
     @Column
     private int vat;
 
     @Builder
-    public PaymentState(Uid uid, Amount amount, Vat vat) {
+    public PaymentStatus(Uid uid, Amount amount, Vat vat) {
         super(uid);
         this.amount = amount.getAmount();
         this.vat = vat.getVat();

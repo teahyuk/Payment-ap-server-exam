@@ -63,7 +63,7 @@
 
 ### 서비스 테이블
 
-#### PaymentState
+#### PaymentStatus
 
 |name|type|index|non null|
 |---|---|---|---|

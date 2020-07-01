@@ -1,6 +1,6 @@
 package com.teahyuk.payment.ap.domain;
 
-import com.teahyuk.payment.ap.domain.entity.PaymentState;
+import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.RequestType;
@@ -41,17 +41,17 @@ public class PaymentTest {
     }
 
     @Test
-    void getPaymentStateTest() {
+    void getPaymentStatusTest() {
         Uid uid = UidTest.createTestUid("1512312");
-        PaymentState paymentState = payment.getPaymentState(uid);
+        PaymentStatus paymentStatus = payment.getPaymentStatus(uid);
 
-        assertThat(paymentState.getUid())
+        assertThat(paymentStatus.getUid())
                 .isEqualTo(uid.getUid());
 
-        assertThat(paymentState.getAmount())
+        assertThat(paymentStatus.getAmount())
                 .isEqualTo(payment.getAmount().getAmount());
 
-        assertThat(paymentState.getVat())
+        assertThat(paymentStatus.getVat())
                 .isEqualTo(payment.getVat().getVat());
     }
 

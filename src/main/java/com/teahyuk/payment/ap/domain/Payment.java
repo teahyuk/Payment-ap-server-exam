@@ -1,7 +1,7 @@
 package com.teahyuk.payment.ap.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.teahyuk.payment.ap.domain.entity.PaymentState;
+import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.Vat;
@@ -40,7 +40,7 @@ public class Payment {
     public CardCompanyDto getCardCompanyDto() {
         return CardCompanyDto.builder()
                 .requestType(RequestType.PAYMENT)
-                .cardInfo(getCardInfo())
+                .cardInfo(cardInfo)
                 .installment(installment)
                 .amount(amount)
                 .vat(vat)
@@ -48,8 +48,8 @@ public class Payment {
     }
 
     @JsonIgnore
-    public PaymentState getPaymentState(Uid uid) {
-        return PaymentState.builder()
+    public PaymentStatus getPaymentStatus(Uid uid) {
+        return PaymentStatus.builder()
                 .uid(uid)
                 .amount(amount)
                 .vat(vat)
