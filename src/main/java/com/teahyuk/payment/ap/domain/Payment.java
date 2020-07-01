@@ -17,26 +17,13 @@ import lombok.*;
 @Getter
 @EqualsAndHashCode
 @ToString
+@Builder
 public class Payment {
     private final CardInfo cardInfo;
     private final Installment installment;
     private final Amount amount;
     private final Vat vat;
 
-    @Builder
-    public Payment(@NonNull CardNumber cardNumber, @NonNull Validity validity, @NonNull Cvc cvc,
-                   @NonNull Installment installment, @NonNull Amount amount, @NonNull Vat vat) {
-        this.cardInfo = CardInfo.builder()
-                .cardNumber(cardNumber)
-                .cvc(cvc)
-                .validity(validity)
-                .build();
-        this.installment = installment;
-        this.amount = amount;
-        this.vat = vat;
-    }
-
-    @JsonIgnore
     public RequestToCompanyObject getRequestToCompanyObject() {
         return RequestToCompanyObject.builder()
                 .requestType(RequestType.PAYMENT)
@@ -47,7 +34,6 @@ public class Payment {
                 .build();
     }
 
-    @JsonIgnore
     public PaymentStatus getPaymentStatus(Uid uid) {
         return PaymentStatus.builder()
                 .uid(uid)

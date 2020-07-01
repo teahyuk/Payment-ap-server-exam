@@ -1,13 +1,14 @@
 package com.teahyuk.payment.ap.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.teahyuk.payment.ap.domain.Payment;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.Vat;
+import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
 import com.teahyuk.payment.ap.domain.vo.card.CardNumber;
 import com.teahyuk.payment.ap.domain.vo.card.Cvc;
 import com.teahyuk.payment.ap.domain.vo.card.Validity;
-import com.teahyuk.payment.ap.domain.Payment;
 import com.teahyuk.payment.ap.exception.BadRequestException;
 import lombok.*;
 
@@ -17,7 +18,9 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class PaymentRequest {
+    @JsonIgnore
     private final static String VAT_INVALID_FORMAT = "Vat must less then amount. %s, %s";
+    @JsonIgnore
     private final static String VALIDITY_INVALID_FORMAT = "Card is expired. %s";
 
     private final String cardNumber;
@@ -43,9 +46,11 @@ public class PaymentRequest {
             }
 
             return Payment.builder()
-                    .cardNumber(new CardNumber(cardNumber))
-                    .validity(validity)
-                    .cvc(new Cvc(cvc))
+                    .cardInfo(CardInfo.builder()
+                            .cardNumber(new CardNumber(cardNumber))
+                            .validity(validity)
+                            .cvc(new Cvc(cvc))
+                            .build())
                     .amount(amount)
                     .vat(vat)
                     .installment(Installment.of(installment))
