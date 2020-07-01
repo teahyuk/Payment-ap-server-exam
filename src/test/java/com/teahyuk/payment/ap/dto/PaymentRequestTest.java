@@ -9,7 +9,6 @@ import com.teahyuk.payment.ap.domain.card.CvcTest;
 import com.teahyuk.payment.ap.domain.card.ValidityTest;
 import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
 import com.teahyuk.payment.ap.dto.card.company.RequestType;
-import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

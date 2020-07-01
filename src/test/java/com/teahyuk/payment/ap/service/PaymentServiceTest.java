@@ -5,7 +5,6 @@ import com.teahyuk.payment.ap.dto.PaymentRequest;
 import com.teahyuk.payment.ap.dto.PaymentRequestTest;
 import com.teahyuk.payment.ap.repository.CardCompanyRepository;
 import com.teahyuk.payment.ap.repository.PaymentRepository;
-import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

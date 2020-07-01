@@ -1,7 +1,9 @@
 package com.teahyuk.payment.ap.controller;
 
 import com.teahyuk.payment.ap.dto.PaymentRequest;
+import com.teahyuk.payment.ap.dto.PaymentRequestDto;
 import com.teahyuk.payment.ap.dto.UidResponse;
+import com.teahyuk.payment.ap.exception.BadRequestException;
 import com.teahyuk.payment.ap.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class PaymentController {
     //TODO status-code 409 conflict
-    //TODO 400 bad request
     //TODO 500
 
     private final PaymentService paymentService;
@@ -25,8 +26,8 @@ public class PaymentController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<UidResponse> addPayment(@RequestBody PaymentRequest paymentRequest) {
-        return ResponseEntity.ok(new UidResponse(paymentService.requestPayment(paymentRequest)));
+    public ResponseEntity<UidResponse> addPayment(@RequestBody PaymentRequestDto paymentRequest) throws BadRequestException {
+        return ResponseEntity.ok(new UidResponse(paymentService.requestPayment(paymentRequest.getPaymentRequest())));
     }
 
 }

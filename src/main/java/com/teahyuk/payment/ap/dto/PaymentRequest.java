@@ -16,7 +16,6 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class PaymentRequest {
-    //TODO validation 체크 가 지금 throwble 로 날라가서 400에러 처리가 너무 다보임
     @NonNull
     private final CardNumber cardNumber;
     @NonNull
