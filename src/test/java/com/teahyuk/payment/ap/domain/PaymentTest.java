@@ -1,7 +1,5 @@
 package com.teahyuk.payment.ap.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
@@ -14,7 +12,6 @@ import com.teahyuk.payment.ap.domain.vo.card.ValidityTest;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
 import com.teahyuk.payment.ap.dto.card.company.RequestToCompanyObject;
-import com.teahyuk.payment.ap.dto.request.PaymentRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,17 +40,6 @@ public class PaymentTest {
                         .installment(payment.getInstallment())
                         .requestType(RequestType.PAYMENT)
                         .build());
-    }
-
-    @Test
-    void getStringDatassTest() throws JsonProcessingException {
-        PaymentRequest payment = PaymentRequest.builder()
-                .cardNumber(null)
-                .installment(0)
-                .amount(1001)
-                .vat(5)
-                .build();
-        System.out.println(new ObjectMapper().writeValueAsString(payment));
     }
 
     @Test
