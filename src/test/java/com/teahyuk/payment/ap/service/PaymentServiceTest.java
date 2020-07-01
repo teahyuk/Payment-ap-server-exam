@@ -37,7 +37,7 @@ class PaymentServiceTest {
 
     @Test
     void requestPaymentTest() {
-        Payment payment = PaymentTest.PAYMENT;
+        Payment payment = PaymentTest.payment;
         Uid insertedUid = paymentService.requestPayment(payment);
         assertThat(paymentStateRepository.findByUid(insertedUid.getUid()))
                 .isNotEmpty();

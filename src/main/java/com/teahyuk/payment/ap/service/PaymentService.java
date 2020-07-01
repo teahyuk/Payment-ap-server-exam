@@ -21,11 +21,7 @@ public class PaymentService {
 
     public Uid requestPayment(Payment payment) throws CryptoException {
         Uid insertedUid = cardCompanyService.requestToCardCompany(payment.getCardCompanyDto());
-        paymentStateRepository.saveAndFlush(PaymentState.builder()
-                .uid(insertedUid)
-                .amount(payment.getAmount())
-                .vat(payment.getVat())
-                .build());
+        paymentStateRepository.saveAndFlush(payment.getPaymentState(insertedUid));
 
         return insertedUid;
     }
