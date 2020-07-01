@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class UidTest {
     public static Uid createTestUid(String uid) {
-        return new Uid(String.format("%20s", uid).replace(' ','_'));
+        return new Uid(String.format("%20s", uid).replace(' ', '_'));
     }
 
     @ParameterizedTest

@@ -1,20 +1,20 @@
 package com.teahyuk.payment.ap.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 
+@Getter
 @Builder
 public class StatusResponse<T> {
-    private final T responseData;
+    private final T data;
     private final ProvideStatusCode statusCode;
-    private final String message;
+    private final String errMessage;
 
-    public ResponseEntity<?> responseEntity(){
-        if(statusCode.isSuccess()){
-            return ResponseEntity.status(statusCode.getCode())
-                    .body(responseData);
-        }
+    @JsonIgnore
+    public ResponseEntity<StatusResponse<T>> responseEntity() {
         return ResponseEntity.status(statusCode.getCode())
-                .body(message);
+                .body(this);
     }
 }

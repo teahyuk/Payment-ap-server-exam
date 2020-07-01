@@ -48,7 +48,7 @@ class VatTest {
             "106,105"
     })
     void getRemainingExceptionTest(int vat, int thenVat) {
-        assertThatThrownBy(()->new Vat(vat).getRemaining(thenVat))
+        assertThatThrownBy(() -> new Vat(vat).getRemaining(thenVat))
                 .isInstanceOf(ArithmeticException.class);
     }
 }

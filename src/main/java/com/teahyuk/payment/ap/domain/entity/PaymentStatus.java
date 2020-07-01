@@ -1,7 +1,5 @@
 package com.teahyuk.payment.ap.domain.entity;
 
-import com.teahyuk.payment.ap.domain.vo.Amount;
-import com.teahyuk.payment.ap.domain.vo.Vat;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import lombok.*;
 

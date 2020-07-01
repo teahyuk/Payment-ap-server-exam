@@ -33,8 +33,8 @@ public class Cancel {
                 .build();
     }
 
-    public boolean isCancelableWithSettingVat(PaymentStatus paymentStatus){
-        if(this.vat == null){
+    public boolean isCancelableWithSettingVat(PaymentStatus paymentStatus) {
+        if (this.vat == null) {
             settingVat(paymentStatus.getVat());
         }
 
@@ -45,18 +45,18 @@ public class Cancel {
 
     private void settingVat(int originVat) {
         this.vat = this.amount.createDefaultVat();
-        if(!this.vat.le(originVat)){
+        if (!this.vat.le(originVat)) {
             this.vat = new Vat(originVat);
         }
     }
 
-    private boolean isRemainingAmountIsGeVat(PaymentStatus paymentStatus){
+    private boolean isRemainingAmountIsGeVat(PaymentStatus paymentStatus) {
         return this.amount.getRemaining(paymentStatus.getAmount())
                 >= this.vat.getRemaining(paymentStatus.getVat());
     }
 
-    public void cancel(PaymentStatus paymentStatus){
-        if(!isCancelableWithSettingVat(paymentStatus)){
+    public void cancel(PaymentStatus paymentStatus) {
+        if (!isCancelableWithSettingVat(paymentStatus)) {
             throw new IllegalStateException("can not cancel payment status!");
         }
 

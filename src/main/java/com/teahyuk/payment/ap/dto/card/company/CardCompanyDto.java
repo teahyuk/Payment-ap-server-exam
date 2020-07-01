@@ -1,11 +1,11 @@
 package com.teahyuk.payment.ap.dto.card.company;
 
+import com.teahyuk.payment.ap.domain.entity.CardCompany;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.RequestType;
 import com.teahyuk.payment.ap.domain.vo.Vat;
 import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
-import com.teahyuk.payment.ap.domain.entity.CardCompany;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.util.CryptoException;
 import lombok.*;

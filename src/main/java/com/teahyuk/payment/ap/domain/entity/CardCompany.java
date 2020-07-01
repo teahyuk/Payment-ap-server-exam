@@ -25,7 +25,7 @@ public class CardCompany extends EntityUid {
     }
 
     @Transient
-    public CardInfo getCardInfo(){
+    public CardInfo getCardInfo() {
         return CardInfo.ofEncryptedString(string.substring(103, 403).trim(), getUid());
     }
 

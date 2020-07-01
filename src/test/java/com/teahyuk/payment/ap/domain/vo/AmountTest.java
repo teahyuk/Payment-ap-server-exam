@@ -37,9 +37,9 @@ class AmountTest {
             "1100,100",
             "20000,1818"
     })
-    void createVatTest(int amount, int expectDefaultVat){
+    void createVatTest(int amount, int expectDefaultVat) {
         assertThat(new Amount(amount).createDefaultVat().getVat())
-            .isEqualTo(expectDefaultVat);
+                .isEqualTo(expectDefaultVat);
     }
 
     @ParameterizedTest
@@ -48,7 +48,7 @@ class AmountTest {
             "100,100,true",
             "101,100,false"
     })
-    void leTest(int amount, int thenAmount, boolean le){
+    void leTest(int amount, int thenAmount, boolean le) {
         assertThat(new Amount(amount).le(thenAmount))
                 .isEqualTo(le);
     }
@@ -69,7 +69,7 @@ class AmountTest {
             "100,105"
     })
     void getRemainingExceptionTest(int amount, int thenAmount) {
-        assertThatThrownBy(()->new Amount(amount).getRemaining(thenAmount))
+        assertThatThrownBy(() -> new Amount(amount).getRemaining(thenAmount))
                 .isInstanceOf(ArithmeticException.class);
     }
 }

@@ -50,9 +50,9 @@ class CancelApiTest {
     private static Stream<Arguments> provideBadRequestDto() {
         return Stream.of(
                 Arguments.of("0123456789012345678", 100, null),
-                Arguments.of("01234567890123456789",100, 1000),
-                Arguments.of("01234567890123456789",100, -1),
-                Arguments.of("01234567890123456789",null, 0));
+                Arguments.of("01234567890123456789", 100, 1000),
+                Arguments.of("01234567890123456789", 100, -1),
+                Arguments.of("01234567890123456789", null, 0));
     }
 
     @ParameterizedTest

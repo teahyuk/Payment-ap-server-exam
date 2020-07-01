@@ -15,7 +15,7 @@ class CardInfoTest {
     private Uid keyUid;
 
     @BeforeEach
-    void setting(){
+    void setting() {
         cardInfo = CardInfo.builder()
                 .cardNumber(CardNumberTest.cardNumber1)
                 .validity(ValidityTest.thisMonthValidity)

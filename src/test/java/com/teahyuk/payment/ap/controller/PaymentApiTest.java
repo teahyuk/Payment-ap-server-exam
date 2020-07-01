@@ -72,7 +72,7 @@ class PaymentApiTest {
 
     private Map<String, Object> getRequestMap(String cardNumber, String validity, String cvc, Integer installment,
                                               Integer amount, Integer vat) {
-        Map<String,Object> requestMap = new HashMap<>();
+        Map<String, Object> requestMap = new HashMap<>();
         putIfNotNull(cardNumber, requestMap, "cardNumber");
         putIfNotNull(validity, requestMap, "validity");
         putIfNotNull(cvc, requestMap, "cvc");
@@ -83,8 +83,8 @@ class PaymentApiTest {
     }
 
     private void putIfNotNull(Object cardNumber, Map<String, Object> requestMap, String key) {
-        if(cardNumber!=null){
-            requestMap.put(key,cardNumber);
+        if (cardNumber != null) {
+            requestMap.put(key, cardNumber);
         }
     }
 

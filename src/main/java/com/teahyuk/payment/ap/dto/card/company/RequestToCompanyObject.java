@@ -16,12 +16,12 @@ import org.apache.logging.log4j.util.Strings;
 @EqualsAndHashCode
 @ToString
 public class RequestToCompanyObject {
-    private RequestType requestType;
-    private CardInfo cardInfo;
-    private Amount amount;
-    private Vat vat;
-    private Installment installment;
-    private Uid originUid;
+    private final RequestType requestType;
+    private final CardInfo cardInfo;
+    private final Amount amount;
+    private final Vat vat;
+    private final Installment installment;
+    private final Uid originUid;
 
     public String serialize(Uid uid) {
         try {
