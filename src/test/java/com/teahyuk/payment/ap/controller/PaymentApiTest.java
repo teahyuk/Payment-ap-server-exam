@@ -1,5 +1,6 @@
 package com.teahyuk.payment.ap.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -13,17 +14,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class PaymentControllerTest {
+class PaymentApiTest {
 
     @Autowired
     private MockMvc mvc;
@@ -37,20 +41,9 @@ class PaymentControllerTest {
     @ParameterizedTest
     @MethodSource("provideSuccessDto")
     void postPaymentTest(String cardNumber, String validity, String cvc, int installment, int amount, Integer vat) throws Exception {
-        String paymentRequest = getPaymentRequestString(cardNumber, validity, cvc, installment, amount, vat);
-
-        assertRequest(paymentRequest, status().isOk());
-    }
-
-    private void assertRequest(String paymentRequest, ResultMatcher... resultMatchers) throws Exception {
-        ResultActions resultActions = mvc.perform(
-                post("/v1/payment")
-                        .content(paymentRequest)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());
-        for (ResultMatcher resultMatcher : resultMatchers) {
-            resultActions.andExpect(resultMatcher);
-        }
+        assertRequest(getRequestMap(cardNumber, validity, cvc, installment, amount, vat),
+                status().isOk(),
+                jsonPath("uid").isString());
     }
 
     private static Stream<Arguments> provideBadRequestDto() { // argument source method
@@ -73,14 +66,36 @@ class PaymentControllerTest {
     @ParameterizedTest
     @MethodSource("provideBadRequestDto")
     void paymentValidationCheck(String cardNumber, String validity, String cvc, Integer installment, Integer amount, Integer vat) throws Exception {
-        String paymentRequest = getPaymentRequestString(cardNumber, validity, cvc, installment, amount, vat);
-
-        assertRequest(paymentRequest, status().isBadRequest());
+        assertRequest(getRequestMap(cardNumber, validity, cvc, installment, amount, vat),
+                status().isBadRequest());
     }
 
-    private String getPaymentRequestString(String cardNumber, String validity, String cvc, Integer installment, Integer amount, Integer vat) {
-        return String.format("{\"cardNumber\":\"%s\",\"validity\":\"%s\",\"cvc\":\"%s\"," +
-                "\"installment\":%s,\"amount\":%s,\"vat\":%s}", cardNumber, validity, cvc, installment, amount, vat);
+    private Map<String, Object> getRequestMap(String cardNumber, String validity, String cvc, Integer installment,
+                                              Integer amount, Integer vat) {
+        Map<String,Object> requestMap = new HashMap<>();
+        putIfNotNull(cardNumber, requestMap, "cardNumber");
+        putIfNotNull(validity, requestMap, "validity");
+        putIfNotNull(cvc, requestMap, "cvc");
+        putIfNotNull(installment, requestMap, "installment");
+        putIfNotNull(amount, requestMap, "amount");
+        putIfNotNull(vat, requestMap, "vat");
+        return requestMap;
     }
 
+    private void putIfNotNull(Object cardNumber, Map<String, Object> requestMap, String key) {
+        if(cardNumber!=null){
+            requestMap.put(key,cardNumber);
+        }
+    }
+
+    private void assertRequest(Object paymentRequest, ResultMatcher... resultMatchers) throws Exception {
+        ResultActions resultActions = mvc.perform(
+                post("/v1/payment")
+                        .content(new ObjectMapper().writeValueAsString(paymentRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+        for (ResultMatcher resultMatcher : resultMatchers) {
+            resultActions.andExpect(resultMatcher);
+        }
+    }
 }

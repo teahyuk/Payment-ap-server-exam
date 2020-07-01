@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 public class Uid {
     public static final int LENGTH = 20;
-    private static final String INVALID_FORMAT = "Create uid error, uid must be has characters. uid=%s";
+    private static final String INVALID_FORMAT = "Create uid error, uid must be has %d characters. uid=%s";
 
     @JsonValue
     private final String uid;
@@ -26,7 +26,7 @@ public class Uid {
 
     private void validationCheck() {
         if (uid.length() != LENGTH) {
-            throw new IllegalArgumentException(String.format(INVALID_FORMAT, uid));
+            throw new IllegalArgumentException(String.format(INVALID_FORMAT, LENGTH, uid));
         }
     }
 }
