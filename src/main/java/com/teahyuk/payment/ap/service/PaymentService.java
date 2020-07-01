@@ -19,7 +19,7 @@ public class PaymentService {
     }
 
     public Uid requestPayment(Payment payment) throws CryptoException {
-        Uid insertedUid = cardCompanyService.requestToCardCompany(payment.getCardCompanyDto());
+        Uid insertedUid = cardCompanyService.requestToCardCompany(payment.getRequestToCompanyObject());
         PaymentStatusRepository.saveAndFlush(payment.getPaymentStatus(insertedUid));
 
         return insertedUid;

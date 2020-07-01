@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
+import com.teahyuk.payment.ap.domain.vo.RequestType;
 import com.teahyuk.payment.ap.domain.vo.Vat;
 import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
 import com.teahyuk.payment.ap.domain.vo.card.CardNumber;
 import com.teahyuk.payment.ap.domain.vo.card.Cvc;
 import com.teahyuk.payment.ap.domain.vo.card.Validity;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
-import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
-import com.teahyuk.payment.ap.domain.vo.RequestType;
+import com.teahyuk.payment.ap.dto.card.company.RequestToCompanyObject;
 import lombok.*;
 
 @Getter
@@ -37,8 +37,8 @@ public class Payment {
     }
 
     @JsonIgnore
-    public CardCompanyDto getCardCompanyDto() {
-        return CardCompanyDto.builder()
+    public RequestToCompanyObject getRequestToCompanyObject() {
+        return RequestToCompanyObject.builder()
                 .requestType(RequestType.PAYMENT)
                 .cardInfo(cardInfo)
                 .installment(installment)

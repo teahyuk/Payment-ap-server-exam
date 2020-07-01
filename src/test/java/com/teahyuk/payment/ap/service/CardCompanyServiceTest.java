@@ -7,11 +7,9 @@ import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
 import com.teahyuk.payment.ap.domain.vo.card.CardNumberTest;
 import com.teahyuk.payment.ap.domain.vo.card.CvcTest;
 import com.teahyuk.payment.ap.domain.vo.card.ValidityTest;
-import com.teahyuk.payment.ap.domain.entity.CardCompany;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
-import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
-import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
 import com.teahyuk.payment.ap.domain.vo.RequestType;
+import com.teahyuk.payment.ap.dto.card.company.RequestToCompanyObject;
 import com.teahyuk.payment.ap.repository.CardCompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,10 +38,9 @@ class CardCompanyServiceTest {
 
     @Test
     void requestToCardCompanyTest() {
-        Uid requestUid = UidTest.createTestUid("312512512");
-        CardCompanyDto cardCompanyDto = CardCompanyDto.builder()
+        //given
+        RequestToCompanyObject cardCompanyDto = RequestToCompanyObject.builder()
                 .requestType(RequestType.PAYMENT)
-                .uid(requestUid)
                 .cardInfo(CardInfo.builder()
                         .cardNumber(CardNumberTest.cardNumber1)
                         .validity(ValidityTest.thisMonthValidity)
@@ -54,16 +51,18 @@ class CardCompanyServiceTest {
                 .installment(Installment.of(11))
                 .build();
 
-        assertThat(cardCompanyService.requestToCardCompany(cardCompanyDto))
-                .isEqualTo(requestUid);
+        //when
+        Uid savedUid = cardCompanyService.requestToCardCompany(cardCompanyDto);
+
+        //then
+        assertThat(cardCompanyRepository.findByUid(savedUid.getUid()))
+                .isNotEmpty();
     }
 
     @Test
     void requestDuplicateUidTest() {
-        Uid requestUid = UidTest.createTestUid("312512512");
-        CardCompanyDto cardCompanyDto = CardCompanyDto.builder()
+        RequestToCompanyObject cardCompanyDto = RequestToCompanyObject.builder()
                 .requestType(RequestType.PAYMENT)
-                .uid(requestUid)
                 .cardInfo(CardInfo.builder()
                         .cardNumber(CardNumberTest.cardNumber1)
                         .validity(ValidityTest.thisMonthValidity)
@@ -74,12 +73,10 @@ class CardCompanyServiceTest {
                 .installment(Installment.of(11))
                 .build();
 
-        cardCompanyRepository.save(CardCompany.builder()
-                .uid(requestUid)
-                .string("requestedSerializedData")
-                .build());
+        Uid firstUid = cardCompanyService.requestToCardCompany(cardCompanyDto);
+        Uid secondUid = cardCompanyService.requestToCardCompany(cardCompanyDto);
 
-        assertThat(cardCompanyService.requestToCardCompany(cardCompanyDto))
-                .isNotEqualTo(requestUid);
+        assertThat(firstUid)
+                .isNotEqualTo(secondUid);
     }
 }

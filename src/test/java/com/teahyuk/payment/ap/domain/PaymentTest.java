@@ -10,7 +10,7 @@ import com.teahyuk.payment.ap.domain.vo.card.CvcTest;
 import com.teahyuk.payment.ap.domain.vo.card.ValidityTest;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
-import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
+import com.teahyuk.payment.ap.dto.card.company.RequestToCompanyObject;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,11 +27,10 @@ public class PaymentTest {
 
     @Test
     void getStringDataTest() {
-        CardCompanyDto cardCompany = payment.getCardCompanyDto();
+        RequestToCompanyObject cardCompany = payment.getRequestToCompanyObject();
 
         assertThat(cardCompany)
-                .isEqualTo(CardCompanyDto.builder()
-                        .uid(cardCompany.getUid())
+                .isEqualTo(RequestToCompanyObject.builder()
                         .cardInfo(payment.getCardInfo())
                         .amount(payment.getAmount())
                         .vat(payment.getVat())
