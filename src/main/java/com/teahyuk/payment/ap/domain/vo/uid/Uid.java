@@ -1,4 +1,4 @@
-package com.teahyuk.payment.ap.domain.uid;
+package com.teahyuk.payment.ap.domain.vo.uid;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.EqualsAndHashCode;

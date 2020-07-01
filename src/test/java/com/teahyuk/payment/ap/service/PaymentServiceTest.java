@@ -1,10 +1,10 @@
 package com.teahyuk.payment.ap.service;
 
-import com.teahyuk.payment.ap.domain.uid.Uid;
-import com.teahyuk.payment.ap.dto.PaymentRequest;
-import com.teahyuk.payment.ap.dto.PaymentRequestTest;
+import com.teahyuk.payment.ap.domain.vo.uid.Uid;
+import com.teahyuk.payment.ap.domain.Payment;
+import com.teahyuk.payment.ap.domain.PaymentTest;
 import com.teahyuk.payment.ap.repository.CardCompanyRepository;
-import com.teahyuk.payment.ap.repository.PaymentRepository;
+import com.teahyuk.payment.ap.repository.PaymentStateRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PaymentServiceTest {
 
     @Autowired
-    private PaymentRepository paymentRepository;
+    private PaymentStateRepository paymentStateRepository;
 
     @Autowired
     private CardCompanyRepository cardCompanyRepository;
@@ -32,14 +32,14 @@ class PaymentServiceTest {
     @BeforeEach
     void setting() {
         cardCompanyService = new CardCompanyService(cardCompanyRepository);
-        paymentService = new PaymentService(paymentRepository, cardCompanyService);
+        paymentService = new PaymentService(paymentStateRepository, cardCompanyService);
     }
 
     @Test
     void requestPaymentTest() {
-        PaymentRequest paymentRequest = PaymentRequestTest.paymentRequest;
-        Uid insertedUid = paymentService.requestPayment(paymentRequest);
-        assertThat(paymentRepository.findByUid(insertedUid.getUid()))
+        Payment payment = PaymentTest.PAYMENT;
+        Uid insertedUid = paymentService.requestPayment(payment);
+        assertThat(paymentStateRepository.findByUid(insertedUid.getUid()))
                 .isNotEmpty();
         assertThat(cardCompanyRepository.findByUid(insertedUid.getUid()))
                 .isNotEmpty();

@@ -1,6 +1,6 @@
 package com.teahyuk.payment.ap.domain.entity;
 
-import com.teahyuk.payment.ap.domain.uid.Uid;
+import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

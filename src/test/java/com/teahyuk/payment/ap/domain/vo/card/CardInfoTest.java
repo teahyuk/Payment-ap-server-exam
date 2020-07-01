@@ -1,7 +1,7 @@
-package com.teahyuk.payment.ap.domain.card;
+package com.teahyuk.payment.ap.domain.vo.card;
 
-import com.teahyuk.payment.ap.domain.uid.Uid;
-import com.teahyuk.payment.ap.domain.uid.UidTest;
+import com.teahyuk.payment.ap.domain.vo.uid.Uid;
+import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
 import com.teahyuk.payment.ap.util.CryptoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

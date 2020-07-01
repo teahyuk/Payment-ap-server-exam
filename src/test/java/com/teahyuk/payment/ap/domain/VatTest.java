@@ -1,5 +1,6 @@
 package com.teahyuk.payment.ap.domain;
 
+import com.teahyuk.payment.ap.domain.vo.Vat;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 

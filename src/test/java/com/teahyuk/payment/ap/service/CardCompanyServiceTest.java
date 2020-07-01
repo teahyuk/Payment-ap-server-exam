@@ -1,17 +1,17 @@
 package com.teahyuk.payment.ap.service;
 
-import com.teahyuk.payment.ap.domain.Amount;
-import com.teahyuk.payment.ap.domain.Installment;
-import com.teahyuk.payment.ap.domain.Vat;
-import com.teahyuk.payment.ap.domain.card.CardInfo;
-import com.teahyuk.payment.ap.domain.card.CardNumberTest;
-import com.teahyuk.payment.ap.domain.card.CvcTest;
-import com.teahyuk.payment.ap.domain.card.ValidityTest;
+import com.teahyuk.payment.ap.domain.vo.Amount;
+import com.teahyuk.payment.ap.domain.vo.Installment;
+import com.teahyuk.payment.ap.domain.vo.Vat;
+import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
+import com.teahyuk.payment.ap.domain.vo.card.CardNumberTest;
+import com.teahyuk.payment.ap.domain.vo.card.CvcTest;
+import com.teahyuk.payment.ap.domain.vo.card.ValidityTest;
 import com.teahyuk.payment.ap.domain.entity.CardCompany;
-import com.teahyuk.payment.ap.domain.uid.Uid;
-import com.teahyuk.payment.ap.domain.uid.UidTest;
+import com.teahyuk.payment.ap.domain.vo.uid.Uid;
+import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
 import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
-import com.teahyuk.payment.ap.dto.card.company.RequestType;
+import com.teahyuk.payment.ap.domain.vo.RequestType;
 import com.teahyuk.payment.ap.repository.CardCompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

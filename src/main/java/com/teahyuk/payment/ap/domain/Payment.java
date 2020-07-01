@@ -1,21 +1,21 @@
-package com.teahyuk.payment.ap.dto;
+package com.teahyuk.payment.ap.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.teahyuk.payment.ap.domain.Amount;
-import com.teahyuk.payment.ap.domain.Installment;
-import com.teahyuk.payment.ap.domain.Vat;
-import com.teahyuk.payment.ap.domain.card.CardInfo;
-import com.teahyuk.payment.ap.domain.card.CardNumber;
-import com.teahyuk.payment.ap.domain.card.Cvc;
-import com.teahyuk.payment.ap.domain.card.Validity;
+import com.teahyuk.payment.ap.domain.vo.Amount;
+import com.teahyuk.payment.ap.domain.vo.Installment;
+import com.teahyuk.payment.ap.domain.vo.Vat;
+import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
+import com.teahyuk.payment.ap.domain.vo.card.CardNumber;
+import com.teahyuk.payment.ap.domain.vo.card.Cvc;
+import com.teahyuk.payment.ap.domain.vo.card.Validity;
 import com.teahyuk.payment.ap.dto.card.company.CardCompanyDto;
-import com.teahyuk.payment.ap.dto.card.company.RequestType;
+import com.teahyuk.payment.ap.domain.vo.RequestType;
 import lombok.*;
 
 @Getter
 @EqualsAndHashCode
 @ToString
-public class PaymentRequest {
+public class Payment {
     @NonNull
     private final CardNumber cardNumber;
     @NonNull
@@ -29,7 +29,7 @@ public class PaymentRequest {
     private final Vat vat;
 
     @Builder
-    public PaymentRequest(@NonNull CardNumber cardNumber, @NonNull Validity validity, @NonNull Cvc cvc, @NonNull Installment installment, @NonNull Amount amount, Vat vat) {
+    public Payment(@NonNull CardNumber cardNumber, @NonNull Validity validity, @NonNull Cvc cvc, @NonNull Installment installment, @NonNull Amount amount, Vat vat) {
         this.cardNumber = cardNumber;
         this.validity = validity;
         this.cvc = cvc;

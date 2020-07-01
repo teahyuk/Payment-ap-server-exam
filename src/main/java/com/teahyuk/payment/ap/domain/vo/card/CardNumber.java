@@ -1,4 +1,4 @@
-package com.teahyuk.payment.ap.domain.card;
+package com.teahyuk.payment.ap.domain.vo.card;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.EqualsAndHashCode;

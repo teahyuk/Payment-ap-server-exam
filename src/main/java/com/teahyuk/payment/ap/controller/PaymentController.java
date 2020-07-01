@@ -1,8 +1,7 @@
 package com.teahyuk.payment.ap.controller;
 
-import com.teahyuk.payment.ap.dto.PaymentRequest;
-import com.teahyuk.payment.ap.dto.PaymentRequestDto;
-import com.teahyuk.payment.ap.dto.UidResponse;
+import com.teahyuk.payment.ap.dto.request.PaymentRequest;
+import com.teahyuk.payment.ap.dto.response.UidResponse;
 import com.teahyuk.payment.ap.exception.BadRequestException;
 import com.teahyuk.payment.ap.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ public class PaymentController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<UidResponse> addPayment(@RequestBody PaymentRequestDto paymentRequest) throws BadRequestException {
+    public ResponseEntity<UidResponse> addPayment(@RequestBody PaymentRequest paymentRequest) throws BadRequestException {
         return ResponseEntity.ok(new UidResponse(paymentService.requestPayment(paymentRequest.getPaymentRequest())));
     }
 

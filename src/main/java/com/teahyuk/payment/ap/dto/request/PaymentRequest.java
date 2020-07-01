@@ -1,12 +1,13 @@
-package com.teahyuk.payment.ap.dto;
+package com.teahyuk.payment.ap.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.teahyuk.payment.ap.domain.Amount;
-import com.teahyuk.payment.ap.domain.Installment;
-import com.teahyuk.payment.ap.domain.Vat;
-import com.teahyuk.payment.ap.domain.card.CardNumber;
-import com.teahyuk.payment.ap.domain.card.Cvc;
-import com.teahyuk.payment.ap.domain.card.Validity;
+import com.teahyuk.payment.ap.domain.vo.Amount;
+import com.teahyuk.payment.ap.domain.vo.Installment;
+import com.teahyuk.payment.ap.domain.vo.Vat;
+import com.teahyuk.payment.ap.domain.vo.card.CardNumber;
+import com.teahyuk.payment.ap.domain.vo.card.Cvc;
+import com.teahyuk.payment.ap.domain.vo.card.Validity;
+import com.teahyuk.payment.ap.domain.Payment;
 import com.teahyuk.payment.ap.exception.BadRequestException;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode
 @ToString
-public class PaymentRequestDto {
+public class PaymentRequest {
     private final static String VAT_INVALID_FORMAT = "Vat must less then amount. %s, %s";
     private final static String VALIDITY_INVALID_FORMAT = "Card is expired. %s";
 
@@ -27,7 +28,7 @@ public class PaymentRequestDto {
     private final Integer vat;
 
     @JsonIgnore
-    public PaymentRequest getPaymentRequest() throws BadRequestException {
+    public Payment getPaymentRequest() throws BadRequestException {
         try {
             Amount amount = new Amount(this.amount);
             Vat vat = this.vat == null ? amount.createDefaultVat() : new Vat(this.vat);
@@ -41,7 +42,7 @@ public class PaymentRequestDto {
                 throw new BadRequestException(String.format(VALIDITY_INVALID_FORMAT, validity));
             }
 
-            return PaymentRequest.builder()
+            return Payment.builder()
                     .cardNumber(new CardNumber(cardNumber))
                     .validity(validity)
                     .cvc(new Cvc(cvc))

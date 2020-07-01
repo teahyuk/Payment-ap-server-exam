@@ -1,7 +1,7 @@
 package com.teahyuk.payment.ap.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teahyuk.payment.ap.dto.PaymentRequestDto;
+import com.teahyuk.payment.ap.dto.request.PaymentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,7 +41,7 @@ class PaymentControllerTest {
     @ParameterizedTest
     @MethodSource("provideSuccessDto")
     void postPaymentTest(String cardNumber, String validity, String cvc, int installment, int amount, Integer vat) throws Exception {
-        PaymentRequestDto paymentRequest = PaymentRequestDto.builder()
+        PaymentRequest paymentRequest = PaymentRequest.builder()
                 .cardNumber(cardNumber)
                 .validity(validity)
                 .cvc(cvc)
@@ -55,7 +55,7 @@ class PaymentControllerTest {
 
     @Test
     void postPaymentVatNullTest() throws Exception {
-        PaymentRequestDto paymentRequest = PaymentRequestDto.builder()
+        PaymentRequest paymentRequest = PaymentRequest.builder()
                 .cardNumber("0123456789")
                 .validity("0720")
                 .cvc("032")
@@ -67,7 +67,7 @@ class PaymentControllerTest {
     }
 
 
-    private void assertRequest(PaymentRequestDto paymentRequest, ResultMatcher... resultMatchers) throws Exception {
+    private void assertRequest(PaymentRequest paymentRequest, ResultMatcher... resultMatchers) throws Exception {
         ResultActions resultActions = mvc.perform(
                 post("/v1/payment")
                         .content(new ObjectMapper().writeValueAsString(paymentRequest))
@@ -93,7 +93,7 @@ class PaymentControllerTest {
     @ParameterizedTest
     @MethodSource("provideBadRequestDto")
     void paymentValidationCheck(String cardNumber, String validity, String cvc, int installment, int amount, Integer vat) throws Exception {
-        PaymentRequestDto paymentRequest = PaymentRequestDto.builder()
+        PaymentRequest paymentRequest = PaymentRequest.builder()
                 .cardNumber(cardNumber)
                 .validity(validity)
                 .cvc(cvc)

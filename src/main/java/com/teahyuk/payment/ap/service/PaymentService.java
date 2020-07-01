@@ -1,30 +1,30 @@
 package com.teahyuk.payment.ap.service;
 
-import com.teahyuk.payment.ap.domain.entity.Payment;
-import com.teahyuk.payment.ap.domain.uid.Uid;
-import com.teahyuk.payment.ap.dto.PaymentRequest;
-import com.teahyuk.payment.ap.repository.PaymentRepository;
+import com.teahyuk.payment.ap.domain.entity.PaymentState;
+import com.teahyuk.payment.ap.domain.vo.uid.Uid;
+import com.teahyuk.payment.ap.domain.Payment;
+import com.teahyuk.payment.ap.repository.PaymentStateRepository;
 import com.teahyuk.payment.ap.util.CryptoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentService {
-    private final PaymentRepository paymentRepository;
+    private final PaymentStateRepository paymentStateRepository;
     private final CardCompanyService cardCompanyService;
 
     @Autowired
-    public PaymentService(PaymentRepository paymentRepository, CardCompanyService cardCompanyService) {
-        this.paymentRepository = paymentRepository;
+    public PaymentService(PaymentStateRepository paymentStateRepository, CardCompanyService cardCompanyService) {
+        this.paymentStateRepository = paymentStateRepository;
         this.cardCompanyService = cardCompanyService;
     }
 
-    public Uid requestPayment(PaymentRequest paymentRequest) throws CryptoException {
-        Uid insertedUid = cardCompanyService.requestToCardCompany(paymentRequest.getCardCompanyDto());
-        paymentRepository.saveAndFlush(Payment.builder()
+    public Uid requestPayment(Payment payment) throws CryptoException {
+        Uid insertedUid = cardCompanyService.requestToCardCompany(payment.getCardCompanyDto());
+        paymentStateRepository.saveAndFlush(PaymentState.builder()
                 .uid(insertedUid)
-                .amount(paymentRequest.getAmount())
-                .vat(paymentRequest.getVat())
+                .amount(payment.getAmount())
+                .vat(payment.getVat())
                 .build());
 
         return insertedUid;

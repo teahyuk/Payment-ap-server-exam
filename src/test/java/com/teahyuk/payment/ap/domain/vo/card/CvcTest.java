@@ -1,4 +1,4 @@
-package com.teahyuk.payment.ap.domain.card;
+package com.teahyuk.payment.ap.domain.vo.card;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
