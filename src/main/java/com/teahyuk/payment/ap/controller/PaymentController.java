@@ -1,24 +1,32 @@
 package com.teahyuk.payment.ap.controller;
 
 import com.teahyuk.payment.ap.dto.PaymentRequest;
+import com.teahyuk.payment.ap.dto.UidResponse;
+import com.teahyuk.payment.ap.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/payment")
 @Slf4j
 public class PaymentController {
+    //TODO status-code 409 conflict
+    //TODO 400 bad request
+    //TODO 500
 
-    //TODO 서비스 구현
-    //TODO Repository 구현
+    private final PaymentService paymentService;
+
+    @Autowired
+    public PaymentController(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
+
     @PostMapping
     @ResponseBody
-    public ResponseEntity<?> addPayment(@Valid @RequestBody PaymentRequest paymentRequest) {
-        logger.info("receivedRequest");
-        logger.warn(paymentRequest.toString());
-        return ResponseEntity.ok(paymentRequest);
+    public ResponseEntity<UidResponse> addPayment(@RequestBody PaymentRequest paymentRequest) {
+        return ResponseEntity.ok(new UidResponse(paymentService.requestPayment(paymentRequest)));
     }
+
 }
