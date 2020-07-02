@@ -25,7 +25,7 @@ public class Amount {
     }
 
     private void validationCheck(Integer amount) {
-        if (Objects.isNull(amount) || amount < MIN || MAX < amount) {
+        if (Objects.isNull(amount) || (amount != 0 && amount < MIN) || MAX < amount) {
             throw new IllegalArgumentException(String.format(INVALID_FORMAT, MIN, MAX, amount));
         }
     }
