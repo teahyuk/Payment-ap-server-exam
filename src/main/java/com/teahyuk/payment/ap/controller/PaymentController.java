@@ -8,6 +8,7 @@ import com.teahyuk.payment.ap.dto.response.StatusResponse;
 import com.teahyuk.payment.ap.dto.response.UidResponse;
 import com.teahyuk.payment.ap.exception.BadRequestException;
 import com.teahyuk.payment.ap.repository.PaymentRepository;
+import com.teahyuk.payment.ap.service.CancelService;
 import com.teahyuk.payment.ap.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,13 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
     private final PaymentService paymentService;
     private final PaymentRepository paymentRepository;
+    private final CancelService cancelService;
 
     @Autowired
-    public PaymentController(PaymentService paymentService, PaymentRepository paymentRepository) {
+    public PaymentController(PaymentService paymentService, PaymentRepository paymentRepository, CancelService cancelService) {
         this.paymentService = paymentService;
         this.paymentRepository = paymentRepository;
+        this.cancelService = cancelService;
     }
 
     @PostMapping
@@ -37,7 +40,7 @@ public class PaymentController {
     @ResponseBody
     public ResponseEntity<?> addCancel(@PathVariable Uid id,
                                        @RequestBody CancelRequest cancelRequest) throws BadRequestException {
-        StatusResponse<Uid> statusResponse = paymentService.requestCancel(cancelRequest.getCancel(id));
+        StatusResponse<Uid> statusResponse = cancelService.requestCancel(cancelRequest.getCancel(id));
         return statusResponse
                 .map(UidResponse::new)
                 .responseEntity();

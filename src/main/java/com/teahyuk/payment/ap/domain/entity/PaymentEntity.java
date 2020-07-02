@@ -2,6 +2,7 @@ package com.teahyuk.payment.ap.domain.entity;
 
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
+import com.teahyuk.payment.ap.domain.vo.RemainingPrice;
 import com.teahyuk.payment.ap.domain.vo.Vat;
 import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
@@ -36,5 +37,9 @@ public class PaymentEntity extends AmountInfo {
     @Transient
     public CardInfo getCardInfo() {
         return CardInfo.ofEncryptedString(encryptedCardInfo, getUid());
+    }
+
+    public RemainingPrice getRemainingPrice() {
+        return new RemainingPrice(new Amount(getAmount()), new Vat(getVat()));
     }
 }

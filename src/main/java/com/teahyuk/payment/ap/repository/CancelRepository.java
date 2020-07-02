@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface CancelRepository extends JpaRepository<CancelEntity, Long> {
     Optional<CancelEntity> findByUid(String uid);
+
     @Query(value = "SELECT sum(cancel.amount) as amount, sum(cancel.vat) as vat FROM " +
             "payment " +
             "inner join cancel where payment.uid = ?1",

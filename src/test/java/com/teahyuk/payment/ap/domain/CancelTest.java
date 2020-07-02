@@ -1,6 +1,6 @@
 package com.teahyuk.payment.ap.domain;
 
-import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
+import com.teahyuk.payment.ap.domain.vo.RemainingPrice;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.RequestType;
@@ -70,56 +70,31 @@ class CancelTest {
     @ParameterizedTest
     @MethodSource("provideIsCancelableTest")
     void isCancelableTest(int originAmount, int originVat, int cancelAmount, Integer cancelVat, boolean expect) {
-        assertThat(Cancel.builder()
+        Cancel cancel = Cancel.builder()
                 .amount(new Amount(cancelAmount))
                 .vat(cancelVat == null ? null : new Vat(cancelVat))
-                .build().settingVatAndCheckCancelable(
-                        PaymentStatus.builder()
-                                .amount(originAmount)
-                                .vat(originVat)
-                                .uid(UidTest.createTestUid("_cancelTestUid_"))
-                                .build()))
+                .build();
+        cancel.settingVat(new Vat(originVat));
+        assertThat(cancel.isCancelable(new RemainingPrice(new Amount(originAmount), new Vat(originVat))))
                 .isEqualTo(expect);
     }
 
-    private static Stream<Arguments> provideCancelTest() {
-        return Stream.of(
-                Arguments.of(11000, 1000, 1100, 100, 9900, 900),
-                Arguments.of(9900, 900, 3300, null, 6600, 600),
-                // Arguments.of(6600, 600, 7000, null, false),
-                // Arguments.of(6600, 600, 6600, 700, false),
-                Arguments.of(6600, 600, 6600, 600, 0, 0),
-                // Arguments.of(0, 0, 100, null, false),
-
-                Arguments.of(20000, 909, 10000, 0, 10000, 909),
-                //Arguments.of(10000, 909, 10000, 0, false),
-                Arguments.of(10000, 909, 10000, 909, 0, 0),
-
-                Arguments.of(20000, 1818, 10000, 1000, 10000, 818),
-                //Arguments.of(10000, 818, 10000, 909, false),
-                Arguments.of(10000, 818, 10000, null, 0, 0));
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideCancelTest")
-    void cancelTest(int originAmount, int originVat, int cancelAmount, Integer cancelVat, int expectAmount,
-                    int expectVat) {
-        PaymentStatus paymentStatus = PaymentStatus.builder()
-                .amount(originAmount)
-                .vat(originVat)
-                .uid(UidTest.createTestUid("_cancelTestUid_"))
-                .build();
-
-        //when
-        Cancel.builder()
-                .amount(new Amount(cancelAmount))
-                .vat(cancelVat == null ? null : new Vat(cancelVat))
-                .build().cancel(paymentStatus);
-
-        //then
-        assertThat(paymentStatus.getAmount())
-                .isEqualTo(expectAmount);
-        assertThat(paymentStatus.getVat())
-                .isEqualTo(expectVat);
-    }
+    //todo 통합 테스트 때 사용
+//    private static Stream<Arguments> provideCancelTest() {
+//        return Stream.of(
+//                Arguments.of(11000, 1000, 1100, 100, 9900, 900),
+//                Arguments.of(9900, 900, 3300, null, 6600, 600),
+//                // Arguments.of(6600, 600, 7000, null, false),
+//                // Arguments.of(6600, 600, 6600, 700, false),
+//                Arguments.of(6600, 600, 6600, 600, 0, 0),
+//                // Arguments.of(0, 0, 100, null, false),
+//
+//                Arguments.of(20000, 909, 10000, 0, 10000, 909),
+//                //Arguments.of(10000, 909, 10000, 0, false),
+//                Arguments.of(10000, 909, 10000, 909, 0, 0),
+//
+//                Arguments.of(20000, 1818, 10000, 1000, 10000, 818),
+//                //Arguments.of(10000, 818, 10000, 909, false),
+//                Arguments.of(10000, 818, 10000, null, 0, 0));
+//    }
 }

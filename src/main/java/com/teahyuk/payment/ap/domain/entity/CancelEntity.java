@@ -16,6 +16,7 @@ import javax.persistence.*;
 @Table(name = "cancel", indexes = {@Index(columnList = "uid", unique = true)})
 public class CancelEntity extends AmountInfo {
     @ManyToOne
+    @JoinColumn(name = "payment", nullable = false)
     private PaymentEntity payment;
 
     @Builder

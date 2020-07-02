@@ -38,16 +38,12 @@ public class Amount {
         return vat.getVat() <= amount;
     }
 
-    public boolean le(int amount) {
-        return this.amount <= amount;
+    public boolean le(Amount amount) {
+        return this.amount <= amount.amount;
     }
 
-    public int getRemaining(int originAmount) {
-        int result = originAmount - this.amount;
-        if (result < 0 || (1 < result && result < 100)) {
-            throw new ArithmeticException(String.format(INVALID_REMAINING_FORMAT, originAmount, amount));
-        }
-        return result;
+    public Amount minus(Amount amount) {
+        return new Amount(this.amount - amount.amount);
     }
 
     @Override

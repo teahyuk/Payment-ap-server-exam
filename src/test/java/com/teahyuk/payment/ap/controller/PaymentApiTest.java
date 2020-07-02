@@ -12,6 +12,7 @@ import com.teahyuk.payment.ap.domain.vo.card.ValidityTest;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
 import com.teahyuk.payment.ap.repository.PaymentRepository;
+import com.teahyuk.payment.ap.service.CancelService;
 import com.teahyuk.payment.ap.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,9 @@ class PaymentApiTest {
 
     @MockBean
     PaymentRepository paymentRepository;
+
+    @MockBean
+    CancelService cancelService;
 
     private static Stream<Arguments> provideValidParam() {
         return Stream.of(

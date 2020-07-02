@@ -29,7 +29,7 @@ public class StatusResponse<T> {
 
 
     public ResponseEntity<?> responseEntity() {
-        if(statusCode.isSuccess()) {
+        if (statusCode.isSuccess()) {
             return ResponseEntity.status(statusCode.getCode())
                     .body(this.data);
         }
@@ -38,7 +38,7 @@ public class StatusResponse<T> {
                 .body(this.errMessage);
     }
 
-    public boolean isSuccess(){
+    public boolean isSuccess() {
         return statusCode.isSuccess();
     }
 }

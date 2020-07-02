@@ -5,6 +5,8 @@ import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
 import com.teahyuk.payment.ap.dto.response.ProvideStatusCode;
 import com.teahyuk.payment.ap.dto.response.StatusResponse;
+import com.teahyuk.payment.ap.repository.PaymentRepository;
+import com.teahyuk.payment.ap.service.CancelService;
 import com.teahyuk.payment.ap.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,6 +43,12 @@ class CancelApiTest {
     private MockMvc mvc;
 
     @MockBean
+    private CancelService cancelService;
+
+    @MockBean
+    private PaymentRepository paymentRepository;
+
+    @MockBean
     private PaymentService paymentService;
 
     private static Stream<Arguments> provideValidParameter() {
@@ -51,9 +59,9 @@ class CancelApiTest {
 
     @ParameterizedTest
     @MethodSource("provideValidParameter")
-    void postPaymentTest(String uid, Integer amount, Integer vat) throws Exception {
+    void postCancelTest(String uid, Integer amount, Integer vat) throws Exception {
         Uid expectUid = UidTest.createTestUid("_resultUid_");
-        given(paymentService.requestCancel(any()))
+        given(cancelService.requestCancel(any()))
                 .willReturn(StatusResponse.<Uid>builder()
                         .data(expectUid)
                         .statusCode(ProvideStatusCode.SUCCESS)
@@ -76,6 +84,13 @@ class CancelApiTest {
     @ParameterizedTest
     @MethodSource("provideInvalidParameter")
     void paymentValidationCheck(String uid, Integer amount, Integer vat) throws Exception {
+        Uid expectUid = UidTest.createTestUid("_resultUid_");
+        given(cancelService.requestCancel(any()))
+                .willReturn(StatusResponse.<Uid>builder()
+                        .data(expectUid)
+                        .statusCode(ProvideStatusCode.SUCCESS)
+                        .build());
+
         assertRequest(uid,
                 getRequestMap(amount, vat),
                 status().isBadRequest());
@@ -109,7 +124,7 @@ class CancelApiTest {
     @ParameterizedTest
     @MethodSource("provideValidParameter")
     void getNotFoundTest(String uid, Integer amount, Integer vat) throws Exception {
-        given(paymentService.requestCancel(any()))
+        given(cancelService.requestCancel(any()))
                 .willReturn(StatusResponse.<Uid>builder()
                         .data(UidTest.createTestUid("###"))
                         .statusCode(ProvideStatusCode.NOT_FOUND)
@@ -125,7 +140,7 @@ class CancelApiTest {
     @ParameterizedTest
     @MethodSource("provideValidParameter")
     void getBadRequestTest(String uid, Integer amount, Integer vat) throws Exception {
-        given(paymentService.requestCancel(any()))
+        given(cancelService.requestCancel(any()))
                 .willReturn(StatusResponse.<Uid>builder()
                         .data(UidTest.createTestUid("###"))
                         .statusCode(ProvideStatusCode.BAD_REQUEST)

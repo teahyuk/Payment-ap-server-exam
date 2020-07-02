@@ -27,16 +27,12 @@ public class Vat {
         }
     }
 
-    public boolean le(int vat) {
-        return this.vat <= vat;
+    public boolean le(Vat vat) {
+        return this.vat <= vat.vat;
     }
 
-    public int getRemaining(int originVat) {
-        int result = originVat - this.vat;
-        if (result < 0) {
-            throw new ArithmeticException(String.format(INVALID_REMAINING_FORMAT, originVat, vat));
-        }
-        return result;
+    public Vat minus(Vat then) {
+        return new Vat(this.vat - then.vat);
     }
 
     @Override
