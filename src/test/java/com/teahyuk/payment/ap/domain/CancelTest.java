@@ -73,7 +73,7 @@ class CancelTest {
         assertThat(Cancel.builder()
                 .amount(new Amount(cancelAmount))
                 .vat(cancelVat == null ? null : new Vat(cancelVat))
-                .build().isCancelableWithSettingVat(
+                .build().settingVatAndCheckCancelable(
                         PaymentStatus.builder()
                                 .amount(originAmount)
                                 .vat(originVat)

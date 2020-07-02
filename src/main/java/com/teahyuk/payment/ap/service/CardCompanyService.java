@@ -4,6 +4,7 @@ import com.teahyuk.payment.ap.domain.Cancel;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.dto.card.company.RequestToCompanyObject;
 import com.teahyuk.payment.ap.repository.CardCompanyRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class CardCompanyService {
+    public static final String NOT_FOUND_FROM_CANCEL_LOG_FORMAT = "Not found cardCompanyEntity from cancel original uid, originalUid={}";
     private final CardCompanyRepository cardCompanyRepository;
 
     @Autowired
@@ -37,8 +40,13 @@ public class CardCompanyService {
 
     @Transactional
     public Optional<Uid> requestToCardCompany(Cancel cancel) {
-        return cardCompanyRepository.findByUid(cancel.getOriginUid().getUid())
+        Optional<Uid> insertedUid = cardCompanyRepository.findByUid(cancel.getOriginUid().getUid())
                 .map(cardCompany ->
                         requestToCardCompany(cancel.getRequestToObject(cardCompany.getCardInfo())));
+        if (!insertedUid.isPresent()) {
+            logger.warn(NOT_FOUND_FROM_CANCEL_LOG_FORMAT, cancel.getOriginUid());
+        }
+        return insertedUid;
     }
+
 }

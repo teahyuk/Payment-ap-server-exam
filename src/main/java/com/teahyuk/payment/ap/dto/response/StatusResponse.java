@@ -37,4 +37,8 @@ public class StatusResponse<T> {
         return ResponseEntity.status(statusCode.getCode())
                 .body(this.errMessage);
     }
+
+    public boolean isSuccess(){
+        return statusCode.isSuccess();
+    }
 }

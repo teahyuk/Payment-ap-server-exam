@@ -27,6 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -95,30 +96,33 @@ class PaymentServiceTest {
                 .amount(new Amount(11000))
                 .vat(new Vat(100))
                 .build();
-        Uid insertedUid = paymentService.requestPayment(payment);
+        Uid originUid = paymentService.requestPayment(payment);
 
         Cancel cancel = Cancel.builder()
                 .amount(new Amount(1000))
                 .vat(new Vat(30))
-                .originUid(insertedUid)
+                .originUid(originUid)
                 .build();
 
         //when
         StatusResponse<Uid> cancelResponse = paymentService.requestCancel(cancel);
 
         //then
+        assertThat(cancelResponse.getData())
+                .isNotEqualTo(originUid);
+
         assertThat(cancelResponse.getStatusCode())
                 .isEqualTo(ProvideStatusCode.SUCCESS);
 
         assertThat(cardCompanyRepository.findByUid(cancelResponse.getData().getUid()))
                 .isNotEmpty();
 
-        assertThat(paymentStatusRepository.findByUid(insertedUid.getUid()))
+        assertThat(paymentStatusRepository.findByUid(originUid.getUid()))
                 .isNotEmpty()
                 .map(PaymentStatus::getAmount)
                 .isEqualTo(Optional.of(10000)); // 11000 - 1000
 
-        assertThat(paymentStatusRepository.findByUid(insertedUid.getUid()))
+        assertThat(paymentStatusRepository.findByUid(originUid.getUid()))
                 .map(PaymentStatus::getVat)
                 .isEqualTo(Optional.of(70)); // 100 - 30
     }

@@ -33,7 +33,7 @@ public class Cancel {
                 .build();
     }
 
-    public boolean isCancelableWithSettingVat(PaymentStatus paymentStatus) {
+    public boolean settingVatAndCheckCancelable(PaymentStatus paymentStatus) {
         if (this.vat == null) {
             settingVat(paymentStatus.getVat());
         }
@@ -56,7 +56,7 @@ public class Cancel {
     }
 
     public void cancel(PaymentStatus paymentStatus) {
-        if (!isCancelableWithSettingVat(paymentStatus)) {
+        if (!settingVatAndCheckCancelable(paymentStatus)) {
             throw new IllegalStateException("can not cancel payment status!");
         }
 
