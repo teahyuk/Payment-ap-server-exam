@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(indexes = {@Index(columnList = "uid", unique = true)})
+@Table(name = "payment", indexes = {@Index(columnList = "uid", unique = true)})
 public class PaymentEntity extends AmountInfo {
     @Column(length = 300)
     private String encryptedCardInfo;
