@@ -26,7 +26,7 @@
 1. master를 clone or download 한다.
 2. 현재 directory 에서 mvnw pakage 실행.
 3. target 폴더에 나온 jar 파일 실행
-    - java -jar ap-0.0.1-SNAPSHOT.jar --server.port=5656    
+    - java -jar ap-0.0.1-SNAPSHOT.jar --server.port=8080    
     
 
 ### 주의사항
