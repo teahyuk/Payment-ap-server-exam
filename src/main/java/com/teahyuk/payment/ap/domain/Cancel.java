@@ -1,10 +1,8 @@
 package com.teahyuk.payment.ap.domain;
 
-import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
-import com.teahyuk.payment.ap.domain.vo.Amount;
-import com.teahyuk.payment.ap.domain.vo.Installment;
-import com.teahyuk.payment.ap.domain.vo.RequestType;
-import com.teahyuk.payment.ap.domain.vo.Vat;
+import com.teahyuk.payment.ap.domain.entity.CancelEntity;
+import com.teahyuk.payment.ap.domain.entity.PaymentEntity;
+import com.teahyuk.payment.ap.domain.vo.*;
 import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.dto.card.company.RequestToCompanyObject;
@@ -33,34 +31,32 @@ public class Cancel {
                 .build();
     }
 
-    public boolean settingVatAndCheckCancelable(PaymentStatus paymentStatus) {
+    public boolean isCancelable(RemainingPrice remainingPrice) {
+        return this.amount.le(remainingPrice.getAmount()) &&
+                this.vat.le(remainingPrice.getVat()) &&
+                isValidRemainPrice(remainingPrice);
+    }
+
+    private boolean isValidRemainPrice(RemainingPrice remainingPrice) {
+        return remainingPrice.getAmount().minus(amount).getAmount()
+                >= remainingPrice.getVat().minus(vat).getVat();
+    }
+
+    public void settingVat(Vat remainVat) {
         if (this.vat == null) {
-            settingVat(paymentStatus.getVat());
-        }
-
-        return this.amount.le(paymentStatus.getAmount()) &&
-                this.vat.le(paymentStatus.getVat()) &&
-                isRemainingAmountIsGeVat(paymentStatus);
-    }
-
-    private void settingVat(int originVat) {
-        this.vat = this.amount.createDefaultVat();
-        if (!this.vat.le(originVat)) {
-            this.vat = new Vat(originVat);
+            this.vat = this.amount.createDefaultVat();
+            if (!this.vat.le(remainVat)) {
+                this.vat = remainVat;
+            }
         }
     }
 
-    private boolean isRemainingAmountIsGeVat(PaymentStatus paymentStatus) {
-        return this.amount.getRemaining(paymentStatus.getAmount())
-                >= this.vat.getRemaining(paymentStatus.getVat());
-    }
-
-    public void cancel(PaymentStatus paymentStatus) {
-        if (!settingVatAndCheckCancelable(paymentStatus)) {
-            throw new IllegalStateException("can not cancel payment status!");
-        }
-
-        paymentStatus.setAmount(this.amount.getRemaining(paymentStatus.getAmount()));
-        paymentStatus.setVat(this.vat.getRemaining(paymentStatus.getVat()));
+    public CancelEntity toEntity(PaymentEntity paymentEntity, Uid uid) {
+        return CancelEntity.builder()
+                .payment(paymentEntity)
+                .uid(uid)
+                .amount(amount)
+                .vat(vat)
+                .build();
     }
 }

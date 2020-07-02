@@ -49,27 +49,7 @@ class AmountTest {
             "101,100,false"
     })
     void leTest(int amount, int thenAmount, boolean le) {
-        assertThat(new Amount(amount).le(thenAmount))
+        assertThat(new Amount(amount).le(new Amount(thenAmount)))
                 .isEqualTo(le);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {
-            "100,1000,900",
-            "100,100,0"
-    })
-    void getRemainingTest(int amount, int thenAmount, int result) {
-        assertThat(new Amount(amount).getRemaining(thenAmount))
-                .isEqualTo(result);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {
-            "1000,100",
-            "100,105"
-    })
-    void getRemainingExceptionTest(int amount, int thenAmount) {
-        assertThatThrownBy(() -> new Amount(amount).getRemaining(thenAmount))
-                .isInstanceOf(ArithmeticException.class);
     }
 }

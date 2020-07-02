@@ -18,7 +18,7 @@ public class CardNumberTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"000123456", "01234567890123456"})
+    @ValueSource(strings = {"000123456", "01234567890123456", "a123s456d78"})
     void constructorError(String cardNumber) {
         assertThatThrownBy(() -> new CardNumber(cardNumber))
                 .isInstanceOf(IllegalArgumentException.class);

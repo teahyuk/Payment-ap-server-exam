@@ -28,27 +28,7 @@ class VatTest {
             "101,100,false"
     })
     void leTest(int vat, int thenVat, boolean le) {
-        assertThat(new Vat(vat).le(thenVat))
+        assertThat(new Vat(vat).le(new Vat(thenVat)))
                 .isEqualTo(le);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {
-            "100,1000,900",
-            "100,100,0"
-    })
-    void getRemainingTest(int vat, int thenVat, int result) {
-        assertThat(new Vat(vat).getRemaining(thenVat))
-                .isEqualTo(result);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {
-            "102,101",
-            "106,105"
-    })
-    void getRemainingExceptionTest(int vat, int thenVat) {
-        assertThatThrownBy(() -> new Vat(vat).getRemaining(thenVat))
-                .isInstanceOf(ArithmeticException.class);
     }
 }

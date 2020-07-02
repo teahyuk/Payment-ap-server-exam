@@ -1,22 +1,11 @@
 package com.teahyuk.payment.ap.service;
 
-import com.teahyuk.payment.ap.domain.Cancel;
 import com.teahyuk.payment.ap.domain.Payment;
 import com.teahyuk.payment.ap.domain.PaymentTest;
-import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
-import com.teahyuk.payment.ap.domain.vo.Amount;
-import com.teahyuk.payment.ap.domain.vo.Installment;
-import com.teahyuk.payment.ap.domain.vo.Vat;
-import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
-import com.teahyuk.payment.ap.domain.vo.card.CardNumberTest;
-import com.teahyuk.payment.ap.domain.vo.card.CvcTest;
-import com.teahyuk.payment.ap.domain.vo.card.ValidityTest;
+import com.teahyuk.payment.ap.domain.entity.PaymentEntity;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
-import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
-import com.teahyuk.payment.ap.dto.response.ProvideStatusCode;
-import com.teahyuk.payment.ap.dto.response.StatusResponse;
 import com.teahyuk.payment.ap.repository.CardCompanyRepository;
-import com.teahyuk.payment.ap.repository.PaymentStatusRepository;
+import com.teahyuk.payment.ap.repository.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -35,10 +23,10 @@ import static org.assertj.core.api.Assertions.in;
 class PaymentServiceTest {
 
     @Autowired
-    private PaymentStatusRepository paymentStatusRepository;
+    private CardCompanyRepository cardCompanyRepository;
 
     @Autowired
-    private CardCompanyRepository cardCompanyRepository;
+    private PaymentRepository paymentRepository;
 
     private CardCompanyService cardCompanyService;
 
@@ -47,7 +35,7 @@ class PaymentServiceTest {
     @BeforeEach
     void setting() {
         cardCompanyService = new CardCompanyService(cardCompanyRepository);
-        paymentService = new PaymentService(paymentStatusRepository, cardCompanyService);
+        paymentService = new PaymentService(cardCompanyService, paymentRepository);
     }
 
     @Test
@@ -55,105 +43,18 @@ class PaymentServiceTest {
         Payment payment = PaymentTest.payment;
         Uid insertedUid = paymentService.requestPayment(payment);
 
-        Optional<PaymentStatus> paymentStatus = paymentStatusRepository.findByUid(insertedUid.getUid());
+        Optional<PaymentEntity> paymentStatus = paymentRepository.findByUid(insertedUid.getUid());
 
         assertThat(paymentStatus)
                 .isNotEmpty()
-                .map(PaymentStatus::getAmount)
+                .map(PaymentEntity::getAmount)
                 .isEqualTo(Optional.of(payment.getAmount().getAmount()));
         assertThat(paymentStatus)
-                .map(PaymentStatus::getVat)
+                .map(PaymentEntity::getVat)
                 .isEqualTo(Optional.of(payment.getVat().getVat()));
         assertThat(cardCompanyRepository.findByUid(insertedUid.getUid()))
                 .isNotEmpty();
-    }
-
-    @Test
-    void requestCancelNotFoundTest() {
-        Cancel cancel = Cancel.builder()
-                .amount(new Amount(2000))
-                .vat(new Vat(30))
-                .originUid(UidTest.createTestUid("notFoundOriginUid"))
-                .build();
-
-        StatusResponse<Uid> cancelResponse = paymentService.requestCancel(cancel);
-
-        assertThat(cancelResponse.getStatusCode())
-                .isEqualTo(ProvideStatusCode.NOT_FOUND);
-        System.out.println(cancelResponse.getErrMessage());
-    }
-
-    @Test
-    void requestCancelTest() {
-        //given
-        Payment payment = Payment.builder()
-                .cardInfo(CardInfo.builder()
-                        .cardNumber(CardNumberTest.cardNumber1)
-                        .validity(ValidityTest.thisMonthValidity)
-                        .cvc(CvcTest.cvc1)
-                        .build())
-                .installment(Installment.of(0))
-                .amount(new Amount(11000))
-                .vat(new Vat(100))
-                .build();
-        Uid originUid = paymentService.requestPayment(payment);
-
-        Cancel cancel = Cancel.builder()
-                .amount(new Amount(1000))
-                .vat(new Vat(30))
-                .originUid(originUid)
-                .build();
-
-        //when
-        StatusResponse<Uid> cancelResponse = paymentService.requestCancel(cancel);
-
-        //then
-        assertThat(cancelResponse.getData())
-                .isNotEqualTo(originUid);
-
-        assertThat(cancelResponse.getStatusCode())
-                .isEqualTo(ProvideStatusCode.SUCCESS);
-
-        assertThat(cardCompanyRepository.findByUid(cancelResponse.getData().getUid()))
+        assertThat(paymentRepository.findByUid(insertedUid.getUid()))
                 .isNotEmpty();
-
-        assertThat(paymentStatusRepository.findByUid(originUid.getUid()))
-                .isNotEmpty()
-                .map(PaymentStatus::getAmount)
-                .isEqualTo(Optional.of(10000)); // 11000 - 1000
-
-        assertThat(paymentStatusRepository.findByUid(originUid.getUid()))
-                .map(PaymentStatus::getVat)
-                .isEqualTo(Optional.of(70)); // 100 - 30
-    }
-
-    @Test
-    void requestCancelBadRequestTest() {
-        //given
-        Payment payment = Payment.builder()
-                .cardInfo(CardInfo.builder()
-                        .cardNumber(CardNumberTest.cardNumber1)
-                        .validity(ValidityTest.thisMonthValidity)
-                        .cvc(CvcTest.cvc1)
-                        .build())
-                .installment(Installment.of(0))
-                .amount(new Amount(110))
-                .vat(new Vat(100))
-                .build();
-        Uid insertedUid = paymentService.requestPayment(payment);
-
-        Cancel cancel = Cancel.builder()
-                .amount(new Amount(1000))
-                .vat(new Vat(30))
-                .originUid(insertedUid)
-                .build();
-
-        //when
-        StatusResponse<Uid> cancelResponse = paymentService.requestCancel(cancel);
-
-        //then
-        assertThat(cancelResponse.getStatusCode())
-                .isEqualTo(ProvideStatusCode.BAD_REQUEST);
-        System.out.println(cancelResponse.getErrMessage());
     }
 }

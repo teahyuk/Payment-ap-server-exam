@@ -25,7 +25,7 @@ public class Uid {
     }
 
     private void validationCheck() {
-        if (uid.length() != LENGTH) {
+        if (uid == null || uid.length() != LENGTH) {
             throw new IllegalArgumentException(String.format(INVALID_FORMAT, LENGTH, uid));
         }
     }

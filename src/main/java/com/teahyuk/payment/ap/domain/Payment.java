@@ -1,6 +1,6 @@
 package com.teahyuk.payment.ap.domain;
 
-import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
+import com.teahyuk.payment.ap.domain.entity.PaymentEntity;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.RequestType;
@@ -33,11 +33,13 @@ public class Payment {
                 .build();
     }
 
-    public PaymentStatus getPaymentStatus(Uid uid) {
-        return PaymentStatus.builder()
+    public PaymentEntity toEntity(Uid uid) {
+        return PaymentEntity.builder()
                 .uid(uid)
-                .amount(amount.getAmount())
-                .vat(vat.getVat())
+                .cardInfo(cardInfo)
+                .amount(amount)
+                .vat(vat)
+                .installment(installment)
                 .build();
     }
 }
