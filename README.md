@@ -21,6 +21,25 @@
   - 중복이 없는 생성 방식 이지만 방어 로직 으로 중복 시 재 생성 하게끔 수정 하였습니다.
     - CardCompany 에 uid 키로 체크하고 insert 하도록 코드 작성
 
+## 빌드 및 실행방법
+
+1. master를 clone or download 한다.
+2. 현재 directory 에서 mvnw pakage 실행.
+3. target 폴더에 나온 jar 파일 실행
+    - java -jar ap-0.0.1-SNAPSHOT.jar --server.port=5656    
+    
+
+### 주의사항
+
+- 현재 미국 내 정책으로 AES256 방식이 java 1.8 버전에서 오류가 납니다.
+  - 추후 암호화 방식을 AES128 로 줄이는 방식 고려 해야합니다.
+
+우선적으로 jre 내부 설정 변경으로 crypto정책을 풀어야 합니다.
+
+1.8u151 이상 버전에서 ${JAVA_HOME}/jre/lib/security/java.security 파일 내에 crypto.policy=unlimited 로 수정 또는 주석 제거
+
+> 출처 : https://cornswrold.tistory.com/191
+
 ## API
 
 ### 1. 결제 API
