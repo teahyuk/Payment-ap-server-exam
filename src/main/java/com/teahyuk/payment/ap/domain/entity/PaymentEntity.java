@@ -1,5 +1,8 @@
 package com.teahyuk.payment.ap.domain.entity;
 
+import com.teahyuk.payment.ap.domain.vo.Amount;
+import com.teahyuk.payment.ap.domain.vo.Installment;
+import com.teahyuk.payment.ap.domain.vo.Vat;
 import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import lombok.AccessLevel;
@@ -15,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(indexes = {@Index(columnList = "uid", unique = true)})
-public class PaymentEntity extends TransactionInfo {
+public class PaymentEntity extends AmountInfo {
     @Column(length = 300)
     private String encryptedCardInfo;
     @Column
@@ -24,10 +27,10 @@ public class PaymentEntity extends TransactionInfo {
     private final List<CancelEntity> cancelEntities = new ArrayList<>();
 
     @Builder
-    public PaymentEntity(Uid uid, CardInfo cardInfo, int installment, int vat, int amount) {
-        super(uid, vat, amount);
+    public PaymentEntity(Uid uid, CardInfo cardInfo, Installment installment, Amount amount, Vat vat) {
+        super(uid, amount, vat);
         this.encryptedCardInfo = cardInfo.getEncryptedString(uid);
-        this.installment = installment;
+        this.installment = installment.getInstallment();
     }
 
     @Transient

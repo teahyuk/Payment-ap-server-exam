@@ -6,6 +6,7 @@ import com.teahyuk.payment.ap.domain.entity.PaymentStatus;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.dto.response.ProvideStatusCode;
 import com.teahyuk.payment.ap.dto.response.StatusResponse;
+import com.teahyuk.payment.ap.repository.PaymentRepository;
 import com.teahyuk.payment.ap.repository.PaymentStatusRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,20 +22,27 @@ public class PaymentService {
             "cancel={}, paymentStatus={}";
     public static final String NOT_FOUND_PAYMENT_STATUS_FROM_LOG_FORMAT = "Not found paymentStatusEntity from cancel original uid, originalUid={}";
     public static final String NOT_FOUND_RESPONSE_FORMAT = "not exist origin uid, origin uid = %s";
-    public static final String BAD_REQUEST_REPONSE_FORMAT = "Can not request cancel. cause cancel is invalid price. " +
+    public static final String BAD_REQUEST_RESPONSE_FORMAT = "Can not request cancel. cause cancel is invalid price. " +
             "payed amount %d(%d) requested cancel amount %d(%d)";
+
     private final PaymentStatusRepository paymentStatusRepository;
     private final CardCompanyService cardCompanyService;
+    private final PaymentRepository paymentRepository;
 
     @Autowired
-    public PaymentService(PaymentStatusRepository PaymentStatusRepository, CardCompanyService cardCompanyService) {
-        this.paymentStatusRepository = PaymentStatusRepository;
+    public PaymentService(PaymentStatusRepository paymentStatusRepository,
+                          CardCompanyService cardCompanyService,
+                          PaymentRepository paymentRepository) {
+        this.paymentStatusRepository = paymentStatusRepository;
         this.cardCompanyService = cardCompanyService;
+        this.paymentRepository = paymentRepository;
     }
 
+    @Transactional
     public Uid requestPayment(Payment payment) {
         Uid insertedUid = cardCompanyService.requestToCardCompany(payment.getRequestToCompanyObject());
         paymentStatusRepository.saveAndFlush(payment.getPaymentStatus(insertedUid));
+        paymentRepository.saveAndFlush(payment.toEntity(insertedUid));
 
         return insertedUid;
     }
@@ -96,7 +104,7 @@ public class PaymentService {
     private StatusResponse<Uid> getBadRequestStatusResponse(Cancel cancel, PaymentStatus paymentStatus) {
         return StatusResponse.<Uid>builder()
                 .statusCode(ProvideStatusCode.BAD_REQUEST)
-                .errMessage(String.format(BAD_REQUEST_REPONSE_FORMAT,
+                .errMessage(String.format(BAD_REQUEST_RESPONSE_FORMAT,
                         paymentStatus.getAmount(),
                         paymentStatus.getVat(),
                         cancel.getAmount().getAmount(),

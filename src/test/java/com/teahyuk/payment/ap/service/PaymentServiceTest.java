@@ -16,6 +16,7 @@ import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
 import com.teahyuk.payment.ap.dto.response.ProvideStatusCode;
 import com.teahyuk.payment.ap.dto.response.StatusResponse;
 import com.teahyuk.payment.ap.repository.CardCompanyRepository;
+import com.teahyuk.payment.ap.repository.PaymentRepository;
 import com.teahyuk.payment.ap.repository.PaymentStatusRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,9 @@ class PaymentServiceTest {
     @Autowired
     private CardCompanyRepository cardCompanyRepository;
 
+    @Autowired
+    private PaymentRepository paymentRepository;
+
     private CardCompanyService cardCompanyService;
 
     private PaymentService paymentService;
@@ -47,7 +51,7 @@ class PaymentServiceTest {
     @BeforeEach
     void setting() {
         cardCompanyService = new CardCompanyService(cardCompanyRepository);
-        paymentService = new PaymentService(paymentStatusRepository, cardCompanyService);
+        paymentService = new PaymentService(paymentStatusRepository, cardCompanyService, paymentRepository);
     }
 
     @Test
@@ -65,6 +69,8 @@ class PaymentServiceTest {
                 .map(PaymentStatus::getVat)
                 .isEqualTo(Optional.of(payment.getVat().getVat()));
         assertThat(cardCompanyRepository.findByUid(insertedUid.getUid()))
+                .isNotEmpty();
+        assertThat(paymentRepository.findByUid(insertedUid.getUid()))
                 .isNotEmpty();
     }
 
