@@ -44,38 +44,37 @@ public class CancelService {
         String originUid = cancel.getOriginUid().getUid();
         Optional<PaymentEntity> paymentEntity = paymentRepository.findByUid(originUid);
 
-        if (!paymentEntity.isPresent()) {
+        if (!paymentEntity.isPresent()) { //결재 정보 없음
             return getNotFoundResponse(cancel);
         }
 
-        RemainingPrice remainingPrice = paymentEntity.get().getRemainingPrice();
-        remainingPrice = cancelRepository.getCanceledPrices(originUid)
-                .map(remainingPrice::subtract)
-                .orElse(remainingPrice);
-
+        PaymentEntity payment = paymentEntity.get();
+        RemainingPrice remainingPrice = getRemainingPrice(originUid, payment);
         if (isNotCancelable(cancel, remainingPrice)) { //남은 가격 에서 취소 가능 한지 확인
+            logger.warn(CAN_NOT_CANCEL_LOG_FORMAT, cancel, remainingPrice);
             return getBadRequest(cancel, remainingPrice);
         }
 
-        return cardCompanyService.requestToCardCompany(cancel) //카드사 데이터에 넣고
-                .map(cancelUid -> {
-                    paymentEntity
-                            .map(payment -> cancel.toEntity(payment, cancelUid))
-                            .ifPresent(cancelRepository::saveAndFlush); // 취소 테이블 에 넣는다.
-                    return getSuccessResponse(cancelUid);
-                })
-                .orElseGet(() ->
-                        getNotFoundResponse(cancel));
+        Uid cancelUid = requestToCardCompany(cancel, payment);
+        cancelRepository.saveAndFlush(cancel.toEntity(payment, cancelUid));
+        return getSuccessResponse(cancelUid);
+    }
+
+    private RemainingPrice getRemainingPrice(String originUid, PaymentEntity payment) {
+        RemainingPrice remainingPrice = payment.getRemainingPrice();
+        remainingPrice = cancelRepository.getCanceledPrices(originUid)
+                .map(remainingPrice::subtract)
+                .orElse(remainingPrice);
+        return remainingPrice;
+    }
+
+    private Uid requestToCardCompany(Cancel cancel, PaymentEntity payment) {
+        return cardCompanyService.requestToCardCompany(cancel.getRequestToObject(payment.getCardInfo()));
     }
 
     private boolean isNotCancelable(Cancel cancel, RemainingPrice remainingPrice) {
         cancel.settingVat(remainingPrice.getVat());
         return !cancel.isCancelable(remainingPrice);
-    }
-
-    private StatusResponse<Uid> getBadRequest(Cancel cancel, RemainingPrice remainingPrice) {
-        logger.warn(CAN_NOT_CANCEL_LOG_FORMAT, cancel, remainingPrice);
-        return getBadRequestStatusResponse(cancel, remainingPrice);
     }
 
     private StatusResponse<Uid> getNotFoundResponse(Cancel cancel) {
@@ -93,7 +92,7 @@ public class CancelService {
                 .build();
     }
 
-    private StatusResponse<Uid> getBadRequestStatusResponse(Cancel cancel, RemainingPrice remainingPrice) {
+    private StatusResponse<Uid> getBadRequest(Cancel cancel, RemainingPrice remainingPrice) {
         return StatusResponse.<Uid>builder()
                 .statusCode(ProvideStatusCode.BAD_REQUEST)
                 .errMessage(String.format(BAD_REQUEST_RESPONSE_FORMAT,
