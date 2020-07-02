@@ -1,5 +1,6 @@
 package com.teahyuk.payment.ap.dto.response;
 
+import com.teahyuk.payment.ap.domain.entity.CancelEntity;
 import com.teahyuk.payment.ap.domain.entity.PaymentEntity;
 import com.teahyuk.payment.ap.domain.vo.RequestType;
 import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
@@ -20,7 +21,7 @@ public class PaymentResponse {
     private final int amount;
     private final int vat;
 
-    public static PaymentResponse fromEntity(PaymentEntity paymentEntity) {
+    public static PaymentResponse fromPayment(PaymentEntity paymentEntity) {
         CardInfo cardInfo = paymentEntity.getCardInfo();
         return PaymentResponse.builder()
                 .uid(paymentEntity.getUid())
@@ -30,6 +31,19 @@ public class PaymentResponse {
                 .requestType(RequestType.PAYMENT)
                 .amount(paymentEntity.getAmount())
                 .vat(paymentEntity.getVat())
+                .build();
+    }
+
+    public static PaymentResponse fromCancel(CancelEntity cancelEntity) {
+        CardInfo cardInfo = cancelEntity.getPayment().getCardInfo();
+        return PaymentResponse.builder()
+                .uid(cancelEntity.getUid())
+                .cardNumber(maskingCardNumber(cardInfo.getCardNumber()))
+                .validity(cardInfo.getValidity())
+                .cvc(cardInfo.getCvc())
+                .requestType(RequestType.CANCEL)
+                .amount(cancelEntity.getAmount())
+                .vat(cancelEntity.getVat())
                 .build();
     }
 

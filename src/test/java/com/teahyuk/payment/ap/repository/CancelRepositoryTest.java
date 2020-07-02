@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.Tuple;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +30,7 @@ class CancelRepositoryTest {
     private CancelRepository cancelRepository;
 
     @Test
-    void testCurrentPrice() {
+    void getCanceledPricesTest() {
         PaymentEntity payment = saveAndGetAmount("0000000000", 20000, 300);
         CancelEntity cancel1 = saveCancelEntity(payment, "11111111111111111111", 1000, 10);
         CancelEntity cancel2 = saveCancelEntity(payment, "22222222222222222222", 2000, 90);

@@ -42,7 +42,8 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
 @WebMvcTest(value = {PaymentController.class, PaymentService.class})
@@ -152,9 +153,9 @@ class PaymentApiTest {
 
         assertRequestGet(uid.getUid(),
                 status().isOk(),
-                jsonPath("uid",is(uid.getUid())),
-                jsonPath("requestType",is("PAYMENT")),
-                jsonPath("cardNumber",matchesRegex("^\\*\\*\\*\\*\\*\\*\\d*\\*\\*\\*$")));
+                jsonPath("uid", is(uid.getUid())),
+                jsonPath("requestType", is("PAYMENT")),
+                jsonPath("cardNumber", matchesRegex("^\\*\\*\\*\\*\\*\\*\\d*\\*\\*\\*$")));
     }
 
     @Test
@@ -169,7 +170,8 @@ class PaymentApiTest {
 
     private void assertRequestGet(String uid, ResultMatcher... resultMatchers) throws Exception {
         ResultActions resultActions = mvc.perform(
-                get("/v1/payment/" + uid))
+                get("/v1/payment/" + uid)
+                        .characterEncoding("UTF-8"))
                 .andDo(print());
         for (ResultMatcher resultMatcher : resultMatchers) {
             resultActions.andExpect(resultMatcher);
