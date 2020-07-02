@@ -39,7 +39,7 @@ public class CancelService {
         this.cancelRepository = cancelRepository;
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public StatusResponse<Uid> requestCancel(Cancel cancel) {
         String originUid = cancel.getOriginUid().getUid();
         Optional<PaymentEntity> paymentEntity = paymentRepository.findByUid(originUid);
