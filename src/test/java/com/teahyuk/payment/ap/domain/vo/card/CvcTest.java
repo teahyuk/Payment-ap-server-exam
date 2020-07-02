@@ -17,7 +17,7 @@ public class CvcTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"0", "0123", "8000", "se1"})
+    @ValueSource(strings = {"0", "0123", "8000", "se1", "+12"})
     void constructorError(String cvc) {
         assertThatThrownBy(() -> new Cvc(cvc))
                 .isInstanceOf(IllegalArgumentException.class);
