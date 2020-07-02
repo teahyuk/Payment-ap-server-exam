@@ -25,21 +25,21 @@ public class CancelController {
         this.cancelRepository = cancelRepository;
     }
 
-    @PostMapping("/{id}/cancel")
+    @PostMapping("/{uid}/cancel")
     @ResponseBody
-    public ResponseEntity<?> addCancel(@PathVariable Uid id,
+    public ResponseEntity<?> addCancel(@PathVariable Uid uid,
                                        @RequestBody CancelRequest cancelRequest) throws BadRequestException {
-        return cancelService.requestCancel(cancelRequest.getCancel(id))
+        return cancelService.requestCancel(cancelRequest.getCancel(uid))
                 .map(UidResponse::new)
                 .responseEntity();
     }
 
-    @GetMapping("/{paymentId}/cancel/{cancelId}")
+    @GetMapping("/{paymentUid}/cancel/{cancelUid}")
     @ResponseBody
-    public ResponseEntity<PaymentResponse> getCancel(@PathVariable Uid paymentId,
-                                                     @PathVariable Uid cancelId) {
-        return cancelRepository.findByUid(cancelId.getUid())
-                .filter(v -> v.getPayment().getUid().equals(paymentId.getUid()))
+    public ResponseEntity<PaymentResponse> getCancel(@PathVariable Uid paymentUid,
+                                                     @PathVariable Uid cancelUid) {
+        return cancelRepository.findByUid(cancelUid.getUid())
+                .filter(v -> v.getPayment().getUid().equals(paymentUid.getUid()))
                 .map(PaymentResponse::fromCancel)
                 .map(ResponseEntity.ok()::body)
                 .orElseGet(() ->

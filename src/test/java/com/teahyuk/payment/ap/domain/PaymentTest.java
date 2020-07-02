@@ -1,17 +1,19 @@
 package com.teahyuk.payment.ap.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teahyuk.payment.ap.domain.entity.PaymentEntity;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.RequestType;
 import com.teahyuk.payment.ap.domain.vo.Vat;
-import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
-import com.teahyuk.payment.ap.domain.vo.card.CardNumberTest;
-import com.teahyuk.payment.ap.domain.vo.card.CvcTest;
-import com.teahyuk.payment.ap.domain.vo.card.ValidityTest;
+import com.teahyuk.payment.ap.domain.vo.card.*;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
 import com.teahyuk.payment.ap.dto.card.company.RequestToCompanyObject;
+import com.teahyuk.payment.ap.dto.request.CancelRequest;
+import com.teahyuk.payment.ap.dto.request.PaymentRequest;
+import com.teahyuk.payment.ap.dto.response.PaymentResponse;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,4 +59,12 @@ public class PaymentTest {
                 .isEqualTo(payment.getVat().getVat());
     }
 
+    @Test
+    void test() throws JsonProcessingException {
+        System.out.println(
+                new ObjectMapper().writeValueAsString(CancelRequest.builder()
+                        .amount(1100)
+                        .vat(40)
+                        .build()));
+    }
 }

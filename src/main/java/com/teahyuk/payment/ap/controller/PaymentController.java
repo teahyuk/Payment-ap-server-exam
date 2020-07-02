@@ -32,10 +32,10 @@ public class PaymentController {
         return ResponseEntity.ok(new UidResponse(paymentService.requestPayment(paymentRequest.getPayment())));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{uid}")
     @ResponseBody
-    public ResponseEntity<PaymentResponse> getPayment(@PathVariable Uid id) {
-        return paymentRepository.findByUid(id.getUid())
+    public ResponseEntity<PaymentResponse> getPayment(@PathVariable Uid uid) {
+        return paymentRepository.findByUid(uid.getUid())
                 .map(PaymentResponse::fromPayment)
                 .map(ResponseEntity.ok()::body)
                 .orElseGet(() ->
