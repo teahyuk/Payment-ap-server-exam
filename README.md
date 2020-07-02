@@ -16,7 +16,6 @@
 - 결재 취소 API 도 Post 이다
 - Amount 및 VAT 는 10억 (1,000,000,000) 이하 이다.
 - 암/복호화 는 카드번호,유효기간,cvc 이다.
-- 테이블 설계 는 추가 선택 요구사항인 부분 취소를 위해 결재 uid 와, Amount, Vat 만 설정 합니다.
 
 ## API
 
@@ -63,18 +62,38 @@
 
 ### 서비스 테이블
 
+#### PAYMENT
+
+|name|type|index|non null|비고|
+|---|---|---|---|---|
+|ID|long|pk|true|테이블 기본 키|
+|UID|varchar(20)|unique index|true|TXid|
+|CARD_INFO|varchar(20)|null|true|암호화된 카드정보|
+|AMOUNT|integer|null|true|결제 요청 값|
+|VAT|integer|null|true|부가세|
+
+#### CANCEL
+
+|name|type|index|non null|비고|
+|---|---|---|---|---|
+|ID|long|pk|true|테이블 기본 키|
+|UID|varchar(20)|unique index|true|TXid|
+|PAYMENT_ID|long|fk|true|결제 테이블 외래키|
+|AMOUNT|integer|null|true|취소 요청 값|
+|VAT|integer|null|true|부가세|
+
 #### PaymentStatus
 
-|name|type|index|non null|
-|---|---|---|---|
-|ID|long|pk|true|
-|UID|varchar(20)|unique index|true|
-|AMOUNT|integer|null|true|
-|VAT|integer|null|true|
+|name|type|index|non null|비고|
+|---|---|---|---|---|
+|ID|long|pk|true|테이블 기본 키|
+|UID|varchar(20)|unique index|true|결제 정보 의 Txid|
+|AMOUNT|integer|null|true|남은 결제 값|
+|VAT|integer|null|true|남은 부가세 값|
   
 ### 통신구간 (String 데이터)
 
-#### StringData
+#### CardCompany
 
 |name|type|index|non null|
 |---|---|---|---|
