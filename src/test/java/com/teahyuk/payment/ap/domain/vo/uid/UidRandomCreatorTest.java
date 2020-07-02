@@ -21,7 +21,7 @@ class UidRandomCreatorTest {
                 .cardNumber(CardNumberTest.cardNumber1);
         for (int i = 0; i < 10000; i++) {
             assertThat(uidRandomCreator.randomBuild().getUid())
-                    .doesNotContain(" ");
+                    .doesNotContain(" ","/");
         }
     }
 
