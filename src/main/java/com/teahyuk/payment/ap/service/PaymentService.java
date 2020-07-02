@@ -32,7 +32,7 @@ public class PaymentService {
         return insertedUid;
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ) //todo if redis transaction -> remove this
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public StatusResponse<Uid> requestCancel(Cancel cancel) {
         return paymentStatusRepository.findByUid(cancel.getOriginUid().getUid())
                 .flatMap(paymentStatus -> {
