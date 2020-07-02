@@ -3,19 +3,23 @@
 - rest api 기반의 결제 시스템 ap 서비스 입니다.
 - Spring boot 2 기반 입니다.
 - build 툴로 maven 을  사용 하였 습니다.
-- AP 서버로 써 MSA 에 대응 할 서비스 개발을 위해 state-less 하게 구현 하는 것이 목표 입니다.
-  - 중복 결재 방지를 위해 작업 하는 부분은 옵션 입니다.
-    1. 단순히 concurrentMap 으로 제어
-    2. 클러스터링 을 위한 concurrentMap<->Redis 옵션화.
-  - DB 는 property를 열어 3rd party DB 설정 가능하게끔 개발 합니다.
     
-## 요구사항
+## 요구사항 정리
 
-- 실제 결재 요청은 3rd party service 로의 전달이 필요함.
-- 결재 API 도 Post
-- 결재 취소 API 도 Post 이다
-- Amount 및 VAT 는 10억 (1,000,000,000) 이하 이다.
-- 암/복호화 는 카드번호,유효기간,cvc 이다.
+- 트랜젝션 관리를 위한 StringData 관리
+  - 3rdParty 로의 통신을 대신 한다고 생각하여 자체 테이블 1개만을 설계 함.
+  - 테이블 명을 **CardCompany** 로 지었습니다.
+- 데이터 저장 테이블은 Payment 와 Cancel 테이블 2개 설계
+- 관계 테이블 입니다.
+- 부분 취소 기능은 PaymentQuery 에서 Cancel의 합을 빼는 것으로 구현 하였습니다.
+- 암호화 방식
+  - AES256 (salted) 방식
+  - 같은 key 라도 매번 암호화 된 문자가 다릅니다.
+  - 다른 암호화된 문자라도 같은 key로 내부 메소드 이용하면 복호화 가능합니다.
+- Uid 생성 방식
+  - 중복 최소 화를 위하여 CardNumber + 현재 시간(millisecond) + random 값 으로 만듦니다.
+  - 중복이 없는 생성 방식 이지만 방어 로직 으로 중복 시 재 생성 하게끔 수정 하였습니다.
+    - CardCompany 에 uid 키로 체크하고 insert 하도록 코드 작성
 
 ## API
 
@@ -23,17 +27,83 @@
 
 - (POST) /v1/payment
 
+#### request
+
+```json
+{
+    "cardNumber": "0321654879",
+    "validity" : "0720",
+    "cvc" : "096",
+    "installment": 3,
+    "amount": 42000,
+    "vat": 50
+}
+```
+
+#### response
+
+```json
+{
+  "uid": "t/a1s3d_g4z6x5c7d8t9"
+}
+```
+
 ### 2. 결제 데이터 조회 API
 
 - (GET) /v1/payment/{id}
+
+#### response
+
+```json
+{
+    "uid": "a1s2d3f4a5s6d7f8d9s0",
+    "cardNumber": "******497***",
+    "validity": "0720",
+    "cvc": "000",
+    "requestType": "PAYMENT",
+    "amount": 2000,
+    "vat": 4
+}
+```
 
 ### 3. 결제 취소 API
 
 - (POST) /v1/payment/{id}/cancel
 
+#### request
+
+```json
+{
+    "amount": 4200,
+    "vat": 0
+}
+```
+
+#### response
+
+```json
+{
+  "uid": "t/a1s3d_g4z6x5c7d8t9"
+}
+```
+
 ### 4. 결제 취소 데이터 조회 API
 
 - (POST) /v1/payment/{id}/cancel/{cancelId}
+
+#### response
+
+```json
+{
+    "uid": "a1s2d3f4a5s6d7f8d9s0",
+    "cardNumber": "******497***",
+    "validity": "0720",
+    "cvc": "000",
+    "requestType": "CANCEL",
+    "amount": 2000,
+    "vat": 4
+}
+```
 
 ## Domain
 
