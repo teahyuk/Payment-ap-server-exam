@@ -1,12 +1,12 @@
 spring:
-  profiles:
-    active: local
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     propertis.hibernate.show_sql: true
     open-in-view: true
     properties.hibernate.hbm2ddl.auto: create
-  datasource:
-    url: jdbc:h2:~/paymentDB
-    driverClassName: org.h2.Driver
-    username: sa
+
+  h2:
+    console:
+      port:
+        web: 8082
+        tcp: 9092
