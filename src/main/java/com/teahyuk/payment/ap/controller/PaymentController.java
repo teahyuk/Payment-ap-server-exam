@@ -27,13 +27,11 @@ public class PaymentController {
     }
 
     @PostMapping
-    @ResponseBody
     public ResponseEntity<UidResponse> addPayment(@RequestBody PaymentRequest paymentRequest) throws BadRequestException {
         return ResponseEntity.ok(new UidResponse(paymentService.requestPayment(paymentRequest.getPayment())));
     }
 
     @GetMapping("/{uid}")
-    @ResponseBody
     public ResponseEntity<PaymentResponse> getPayment(@PathVariable Uid uid) {
         return paymentRepository.findByUid(uid.getUid())
                 .map(PaymentResponse::fromPayment)
