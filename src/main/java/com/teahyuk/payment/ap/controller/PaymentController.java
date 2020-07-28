@@ -30,7 +30,7 @@ public class PaymentController {
         this.paymentRepository = paymentRepository;
     }
 
-    @ApiOperation(value = "결제 요청", notes = "카드사로 결제 요청을 수행 한다.")
+    @ApiOperation(value = "결제 요청", notes = "카드사 로 결제 요청을 수행 한다.")
     @PostMapping
     public ResponseEntity<UidResponse> addPayment(@ApiParam(value = "결제 정보", required = true)
                                                       @RequestBody PaymentRequest paymentRequest) throws BadRequestException {
