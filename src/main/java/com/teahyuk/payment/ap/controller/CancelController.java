@@ -3,6 +3,7 @@ package com.teahyuk.payment.ap.controller;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.dto.request.CancelRequest;
 import com.teahyuk.payment.ap.dto.response.PaymentResponse;
+import com.teahyuk.payment.ap.dto.response.ResponseErrorException;
 import com.teahyuk.payment.ap.dto.response.UidResponse;
 import com.teahyuk.payment.ap.exception.BadRequestException;
 import com.teahyuk.payment.ap.repository.CancelRepository;
@@ -32,10 +33,10 @@ public class CancelController {
     @ApiOperation(value = "취소 요청",
             notes = "결제 취소를 요청 한다.")
     @PostMapping("/{uid}/cancel")
-    public ResponseEntity<?> addCancel(@ApiParam(value = "결제 id", required = true)
+    public ResponseEntity<UidResponse> addCancel(@ApiParam(value = "결제 id", required = true)
                                        @PathVariable Uid uid,
                                        @ApiParam(value = "취소 정보", required = true)
-                                       @RequestBody CancelRequest cancelRequest) throws BadRequestException {
+                                       @RequestBody CancelRequest cancelRequest) throws BadRequestException, ResponseErrorException {
         return cancelService.requestCancel(cancelRequest.getCancel(uid))
                 .map(UidResponse::new)
                 .responseEntity();
