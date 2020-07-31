@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "2. cancel")
+@Api(tags = "3. cancel")
 @RestController
 @RequestMapping("/v1/payment")
 @Slf4j
