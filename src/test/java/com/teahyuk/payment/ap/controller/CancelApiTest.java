@@ -1,6 +1,7 @@
 package com.teahyuk.payment.ap.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.teahyuk.payment.ap.auth.config.security.SecurityConfiguration;
 import com.teahyuk.payment.ap.domain.entity.CancelEntity;
 import com.teahyuk.payment.ap.domain.entity.PaymentEntity;
 import com.teahyuk.payment.ap.domain.vo.Amount;
@@ -22,6 +23,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -45,8 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
-@WebMvcTest(value = {CancelController.class})
-@AutoConfigureMockMvc
+@WebMvcTest(controllers = {CancelController.class}, excludeAutoConfiguration = {SecurityAutoConfiguration.class, SecurityConfiguration.class})
 @ActiveProfiles("test")
 class CancelApiTest {
 
