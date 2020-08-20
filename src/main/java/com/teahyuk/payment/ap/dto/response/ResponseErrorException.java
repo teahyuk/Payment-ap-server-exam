@@ -19,4 +19,8 @@ public class ResponseErrorException extends Exception {
     public int getStatusCode() {
         return provideStatusCode.getCode();
     }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
 }

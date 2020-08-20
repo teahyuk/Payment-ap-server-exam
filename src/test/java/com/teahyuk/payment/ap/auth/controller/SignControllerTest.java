@@ -1,67 +1,53 @@
 package com.teahyuk.payment.ap.auth.controller;
 
-import com.teahyuk.payment.ap.auth.config.security.JwtTokenProvider;
 import com.teahyuk.payment.ap.auth.entity.UserEntity;
 import com.teahyuk.payment.ap.auth.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
+import javax.transaction.Transactional;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@WebMvcTest(controllers = SignController.class,
-        excludeAutoConfiguration = SecurityAutoConfiguration.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@EnableAutoConfiguration(exclude = SecurityAutoConfiguration.class)
+@Transactional
 @ActiveProfiles("test")
 class SignControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     UserRepository userRepository;
 
-    @MockBean
-    JwtTokenProvider jwtTokenProvider;
-
-    @MockBean
+    @Autowired
     PasswordEncoder passwordEncoder;
-
-    @BeforeEach
-    void setting(){
-        given(passwordEncoder.matches(anyString(),anyString()))
-                .willAnswer(v->{
-                    String password = v.getArgument(0);
-                    String encoded = v.getArgument(1);
-                    return password.equals(encoded);
-                });
-    }
 
     @Test
     void loginSuccessTest() throws Exception {
         String id = "teahyuk@naver.com";
         String pw = "testPassword";
-        given(userRepository.findByUid(id))
-                .willReturn(Optional.of(UserEntity.builder()
+        userRepository.save(UserEntity.builder()
                         .id(1)
                         .name("teahyuk")
-                        .password(pw)
+                        .password(passwordEncoder.encode(pw))
                         .uid(id)
-                        .build()));
+                        .build());
 
         mockMvc.perform(
                 post("/v1/signin")
@@ -77,8 +63,6 @@ class SignControllerTest {
     void notFoundIdTest() throws Exception {
         String id = "teahyuk@naver.com";
         String pw = "testPassword";
-        given(userRepository.findByUid(id))
-                .willReturn(Optional.empty());
 
         mockMvc.perform(
                 post("/v1/signin")
@@ -94,21 +78,66 @@ class SignControllerTest {
     void invalidPWTest() throws Exception {
         String id = "teahyuk@naver.com";
         String pw = "testPassword";
-        given(userRepository.findByUid(id))
-                .willReturn(Optional.of(UserEntity.builder()
+        userRepository.save(UserEntity.builder()
                         .id(1)
                         .name("teahyuk")
-                        .password(pw)
+                        .password(passwordEncoder.encode(pw))
                         .uid(id)
-                        .build()));
+                        .build());
 
         mockMvc.perform(
                 post("/v1/signin")
                         .param("id", id)
-                        .param("password", "invalid")
+                        .param("password", "___")
                         .characterEncoding("UTF-8")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void signUpSuccessTest() throws Exception {
+        String id = "teahyuk@naver.com";
+        String pw = "testPassword";
+        String name = "teahyuk";
+
+        mockMvc.perform(
+                post("/v1/signup")
+                        .param("id", id)
+                        .param("password", pw)
+                        .param("name",name)
+                        .characterEncoding("UTF-8")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        assertThat(userRepository.findByUid(id))
+                .isNotEmpty()
+                .get()
+                .extracting(UserEntity::getName)
+                .isEqualTo(name);
+    }
+
+    @Test
+    void signUpConflictTest() throws Exception {
+        String id = "teahyuk@naver.com";
+        String pw = "testPassword";
+        String name = "teahyuk";
+        userRepository.saveAndFlush(UserEntity.builder()
+                .id(1)
+                .name(name)
+                .password(passwordEncoder.encode(pw))
+                .uid(id)
+                .build());
+
+        mockMvc.perform(
+                post("/v1/signup")
+                        .param("id", id)
+                        .param("password", "___")
+                        .param("name",name)
+                        .characterEncoding("UTF-8")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isConflict());
     }
 }

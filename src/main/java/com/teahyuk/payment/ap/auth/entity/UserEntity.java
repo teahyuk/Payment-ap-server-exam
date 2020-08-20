@@ -22,7 +22,7 @@ public class UserEntity implements UserDetails {
     @GeneratedValue
     private long id;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, unique = true)
     private String uid;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,14 +42,19 @@ public class SignController {
     @PostMapping(value = "/signup")
     public ResponseEntity<Boolean> signUp(@ApiParam(value = "회원ID : 이메일", required = true) @RequestParam String id,
                                           @ApiParam(value = "비밀번호", required = true) @RequestParam String password,
-                                          @ApiParam(value = "이름", required = true) @RequestParam String name) {
+                                          @ApiParam(value = "이름", required = true) @RequestParam String name) throws SignUpFailedException {
 
-        userRepository.save(UserEntity.builder()
-                .uid(id)
-                .password(passwordEncoder.encode(password))
-                .name(name)
-                .roles(Collections.singletonList("ROLE_USER"))
-                .build());
+        try {
+            userRepository.saveAndFlush(UserEntity.builder()
+                    .uid(id)
+                    .password(passwordEncoder.encode(password))
+                    .name(name)
+                    .roles(Collections.singletonList("ROLE_USER"))
+                    .build());
+        } catch (DataIntegrityViolationException e){
+            throw new SignUpFailedException(e.getMessage());
+        }
+
         return ResponseEntity.ok(true);
     }
 }
