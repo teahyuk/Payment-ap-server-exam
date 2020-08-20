@@ -5,10 +5,7 @@ import com.teahyuk.payment.ap.domain.entity.PaymentEntity;
 import com.teahyuk.payment.ap.domain.vo.Amount;
 import com.teahyuk.payment.ap.domain.vo.Installment;
 import com.teahyuk.payment.ap.domain.vo.Vat;
-import com.teahyuk.payment.ap.domain.vo.card.CardInfo;
-import com.teahyuk.payment.ap.domain.vo.card.CardNumber;
-import com.teahyuk.payment.ap.domain.vo.card.CvcTest;
-import com.teahyuk.payment.ap.domain.vo.card.ValidityTest;
+import com.teahyuk.payment.ap.domain.vo.card.*;
 import com.teahyuk.payment.ap.domain.vo.uid.Uid;
 import com.teahyuk.payment.ap.domain.vo.uid.UidTest;
 import com.teahyuk.payment.ap.repository.PaymentRepository;
@@ -30,6 +27,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -64,9 +63,10 @@ class PaymentApiTest {
     CancelService cancelService;
 
     private static Stream<Arguments> provideValidParam() {
+        String thisMonth = ValidityTest.thisMonthValidity.getValidity();
         return Stream.of(
-                Arguments.of("0123456789", "0720", "032", 4, 20000, 100),
-                Arguments.of("0123456789", "0720", "032", 4, 20000, null));
+                Arguments.of("0123456789", thisMonth, "032", 4, 20000, 100),
+                Arguments.of("0123456789", thisMonth, "032", 4, 20000, null));
     }
 
     @ParameterizedTest
@@ -82,20 +82,22 @@ class PaymentApiTest {
     }
 
     private static Stream<Arguments> provideInvalidParam() {
+        String thisMonth = ValidityTest.thisMonthValidity.getValidity();
+        String lastMonth = ValidityTest.lastMonthValidity.getValidity();
         return Stream.of(
-                Arguments.of("012345678", "0720", "032", 4, 20000, 100),
-                Arguments.of("0123456789", "0719", "032", 4, 20000, 100),
+                Arguments.of("012345678", thisMonth, "032", 4, 20000, 100),
+                Arguments.of("0123456789", lastMonth, "032", 4, 20000, 100),
                 Arguments.of("0123456789", "07193", "032", 4, 20000, 100),
-                Arguments.of("0123456789", "0720", "4132", 4, 20000, 100),
-                Arguments.of("0123456789", "0720", "032", 1, 20000, 100),
-                Arguments.of("0123456789", "0720", "032", 4, 10, 100),
-                Arguments.of("0123456789", "0720", "032", 4, 20000, -1),
-                Arguments.of("0123456789", "0720", "032", 4, 20000, 20001),
-                Arguments.of(null, "0720", "032", 4, 20000, 100),
+                Arguments.of("0123456789", thisMonth, "4132", 4, 20000, 100),
+                Arguments.of("0123456789", thisMonth, "032", 1, 20000, 100),
+                Arguments.of("0123456789", thisMonth, "032", 4, 10, 100),
+                Arguments.of("0123456789", thisMonth, "032", 4, 20000, -1),
+                Arguments.of("0123456789", thisMonth, "032", 4, 20000, 20001),
+                Arguments.of(null, thisMonth, "032", 4, 20000, 100),
                 Arguments.of("0123456789", null, "032", 4, 20000, 100),
-                Arguments.of("0123456789", "0720", null, 4, 20000, 100),
-                Arguments.of("0123456789", "0720", "032", null, 20000, 100),
-                Arguments.of("0123456789", "0720", "032", 4, null, 100));
+                Arguments.of("0123456789", thisMonth, null, 4, 20000, 100),
+                Arguments.of("0123456789", thisMonth, "032", null, 20000, 100),
+                Arguments.of("0123456789", thisMonth, "032", 4, null, 100));
     }
 
     @ParameterizedTest
@@ -117,9 +119,9 @@ class PaymentApiTest {
         return requestMap;
     }
 
-    private void putIfNotNull(Object cardNumber, Map<String, Object> requestMap, String key) {
-        if (cardNumber != null) {
-            requestMap.put(key, cardNumber);
+    private void putIfNotNull(Object value, Map<String, Object> requestMap, String key) {
+        if (value != null) {
+            requestMap.put(key, value);
         }
     }
 
