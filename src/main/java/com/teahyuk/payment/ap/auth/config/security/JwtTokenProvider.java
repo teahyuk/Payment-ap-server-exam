@@ -26,7 +26,7 @@ public class JwtTokenProvider {
     @Value("spring.jwt.secret")
     private String secretKey;
 
-    private final long tokenValidMillisecond = 1000L * 60 * 60;
+    private final long TOKEN_VALID_MILLISECOND = 1000L * 60 * 60;
 
     private final UserDetailsService userDetailsService;
 
@@ -43,7 +43,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setClaims(claims) // 데이터
                 .setIssuedAt(now) // 토큰 발행일자
-                .setExpiration(new Date(now.getTime() + tokenValidMillisecond))
+                .setExpiration(new Date(now.getTime() + TOKEN_VALID_MILLISECOND))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
