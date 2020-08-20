@@ -10,3 +10,5 @@ spring:
     url: jdbc:h2:~/paymentDB
     driverClassName: org.h2.Driver
     username: sa
+  jwt:
+    secret: teahyuk#@!

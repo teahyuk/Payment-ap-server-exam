@@ -21,18 +21,10 @@ public class SwaggerConfiguration {
     private static final String TEAHYUK_GITHUB_IO = "https://teahyuk.github.io";
     private static final String TEAHYUK = "teahyuk";
 
-    private static final String controllerPackageName;
-
-    static {
-        String configPkgName = SwaggerConfiguration.class.getPackage().getName();
-        String projectPkgName = configPkgName.substring(0, configPkgName.lastIndexOf("."));
-        controllerPackageName = projectPkgName + ".controller";
-    }
-
     @Bean
     public Docket swaggerApiV1() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(swaggerInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage(controllerPackageName))
+                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
                 .useDefaultResponseMessages(false); // 기본으로 세팅되는 200,401,403,404 메시지를 표시 하지 않음

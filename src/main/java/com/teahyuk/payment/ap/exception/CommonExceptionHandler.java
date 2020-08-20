@@ -31,6 +31,6 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<?> handleErrorStatus(ResponseErrorException exception) {
         logger.error(exception);
         return ResponseEntity.status(exception.getStatusCode())
-                .body(exception.getMessage());
+                .body(exception.getResponseMessage());
     }
 }
