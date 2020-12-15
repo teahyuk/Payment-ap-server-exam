@@ -28,17 +28,13 @@ public class StatusResponse<T> {
     }
 
 
-    public ResponseEntity<?> responseEntity() {
+    public ResponseEntity<T> responseEntity() throws ResponseErrorException {
         if (statusCode.isSuccess()) {
             return ResponseEntity.status(statusCode.getCode())
                     .body(this.data);
         }
 
-        return ResponseEntity.status(statusCode.getCode())
-                .body(this.errMessage);
+        throw new ResponseErrorException(this.errMessage, statusCode);
     }
 
-    public boolean isSuccess() {
-        return statusCode.isSuccess();
-    }
 }

@@ -8,33 +8,39 @@ import com.teahyuk.payment.ap.exception.BadRequestException;
 import com.teahyuk.payment.ap.repository.PaymentRepository;
 import com.teahyuk.payment.ap.service.CancelService;
 import com.teahyuk.payment.ap.service.PaymentService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = "2. payment")
 @RestController
 @RequestMapping("/v1/payment")
-@Slf4j
 public class PaymentController {
     private final PaymentService paymentService;
     private final PaymentRepository paymentRepository;
 
     @Autowired
-    public PaymentController(PaymentService paymentService, PaymentRepository paymentRepository, CancelService cancelService) {
+    public PaymentController(PaymentService paymentService, PaymentRepository paymentRepository) {
         this.paymentService = paymentService;
         this.paymentRepository = paymentRepository;
     }
 
+    @ApiOperation(value = "결제 요청", notes = "카드사 로 결제 요청을 수행 한다.")
     @PostMapping
-    @ResponseBody
-    public ResponseEntity<UidResponse> addPayment(@RequestBody PaymentRequest paymentRequest) throws BadRequestException {
+    public ResponseEntity<UidResponse> addPayment(@ApiParam(value = "결제 정보", required = true)
+                                                      @RequestBody PaymentRequest paymentRequest) throws BadRequestException {
         return ResponseEntity.ok(new UidResponse(paymentService.requestPayment(paymentRequest.getPayment())));
     }
 
+    @ApiOperation(value = "결제 내역 확인", notes = "uid 에 맞는 결제 내역을 조회 한다.")
     @GetMapping("/{uid}")
-    @ResponseBody
-    public ResponseEntity<PaymentResponse> getPayment(@PathVariable Uid uid) {
+    public ResponseEntity<PaymentResponse> getPayment(@ApiParam(value = "결제 id", required = true)
+                                                          @PathVariable Uid uid) {
         return paymentRepository.findByUid(uid.getUid())
                 .map(PaymentResponse::fromPayment)
                 .map(ResponseEntity.ok()::body)

@@ -34,7 +34,6 @@ public class PaymentEntity extends AmountInfo {
         this.installment = installment.getInstallment();
     }
 
-    @Transient
     public CardInfo getCardInfo() {
         return CardInfo.ofEncryptedString(encryptedCardInfo, getUid());
     }
